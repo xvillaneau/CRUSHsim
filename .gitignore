@@ -1,0 +1,4 @@
+.*.swp
+*.cfg
+venv/*
+tmp/*
