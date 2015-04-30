@@ -30,9 +30,9 @@ The _Analyze_ page allows you to decide between which states you want to run the
 
 ## What works and what doesn't
 
-Currently, the graph only displays the differences between two sets of data placement. These placements are given by `crushtool test` and are simply compared. This is however not representative of the actual network trafic that might occur.
+Currently, the graph only displays the differences between two sets of data placement. These placements are given by `crushtool test` and are simply compared. This is however not representative of the actual network traffic that might occur.
 
 Also, only minor modifications of the CRUSH map are currently supported. Moving a bucket is not supported. Buckets or devices that are different in the final and initial states may not share the same names or IDs. And that's only a few exceptions to name.
 
-This tool is _Proof-of-Concept_ and not an actual reliable Ceph utility. You *MUST NOT* rely on it to disprove possibility of data loss on a running Ceph cluster.
+This tool is a _Proof-of-Concept_ and not an actual reliable Ceph utility. You **MUST NOT** rely on it to disprove possibility of data loss on a running Ceph cluster. 
 
