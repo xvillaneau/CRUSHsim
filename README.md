@@ -10,8 +10,17 @@ CRUSHSim is a small web-based tool intended for use by Ceph administrators, whic
 
 CRUSHSim requires :
 - Python Flask
-- FlaskUpload
+- Flask-Uploads
 - the `crushtool` utility
+
+The two firsts requirements can be installed with `pip`:
+```
+pip install Flask
+pip install Flask-Uploads
+```
+You may want to run Flask in a virtual environment, as described in the [Flask documentation](http://flask.pocoo.org/docs/0.10/installation/). The `venv` directory is already set in `.gitignore`.
+
+`crushtool` currently requires Ceph to be installed, or at least I think.
 
 CRUSHSim includes the following libraries
 - Bootstrap
