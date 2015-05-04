@@ -1,4 +1,23 @@
 
+// ====================================================================
+// CRUSHSim - CRUSH Simulation web app for Ceph admins
+// ---------------------------------------------------
+// 
+// By Xavier Villaneau, 2015
+// xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+// Claranet SAS, Rennes, France
+// ====================================================================
+// results-request.js - Script for displaying the results
+//  - Fetches all the data we need
+//  - Processes the result and makes a matrix out of it
+//  - Calls the script that will build and display the graph
+//  - Requires results-graph.js and math.js
+//
+// Changelog:
+// ----------
+// May 4th 2015 - Initial release
+
+
 $('document').ready(function(){
 	// This initializes the page, by loading the data
 	var stats_ini, stats_fin,

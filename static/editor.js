@@ -1,4 +1,23 @@
 
+// ====================================================================
+// CRUSHSim - CRUSH Simulation web app for Ceph admins
+// ---------------------------------------------------
+// 
+// By Xavier Villaneau, 2015
+// xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+// Claranet SAS, Rennes, France
+// ====================================================================
+// editor.js - Interactivity for the editor page
+//  - Fetches the CRUSH map and uses D3 to display it as a graph
+//  - Handles all interactions with the graph, updates it and the
+//    CRUSH map accordingly
+//  - Allows the updated map to be submitted to the server
+//
+// Changelog:
+// ----------
+// May 4th 2015 - Initial release
+
+
 // Image height and width calculation
 var width = d3.select('#clustermap')[0][0].clientWidth - 30,
     height = 840,

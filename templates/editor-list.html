@@ -1,3 +1,21 @@
+{#
+ ====================================================================
+ CRUSHSim - CRUSH Simulation web app for Ceph admins
+ ---------------------------------------------------
+ 
+ By Xavier Villaneau, 2015
+ xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+ Claranet SAS, Rennes, France
+ ====================================================================
+ editor-list.html - Jinja template for the CRUSH map selection and
+ upload prior to editing.
+  - Allows selection of an existing CRUSH map, leads to editor
+  - Also allows uploading of a new CRUSH map
+
+ Changelog:
+ ----------
+ May 4th 2015 - Initial release
+#}
 {% extends "layout.html" %}
 {% block main %}
 	<h1>Interactive CRUSH map editor</h1>

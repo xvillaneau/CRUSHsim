@@ -1,3 +1,23 @@
+
+// ====================================================================
+// CRUSHSim - CRUSH Simulation web app for Ceph admins
+// ---------------------------------------------------
+// 
+// By Xavier Villaneau, 2015
+// xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+// Claranet SAS, Rennes, France
+// ====================================================================
+// results-graph.js - Displays the graph of transfers in a cluster from
+// the data matrix and the list of buckets, using D3.js
+//  - Uses the layout defined in results-layout.js
+//  - The actual graph drawing is in a separate function since it will
+//    be called each time a section is collapsed or expanded
+//
+// Changelog:
+// ----------
+// May 4th 2015 - Initial release
+
+
 function displayResultsGraph(matrix, buckets) {
 	// From a data matrix and a few bits of metadata, build the Chord graph
 	// This graph is heavily inspired (well, copied) from Mike Bostock's 

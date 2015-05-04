@@ -1,3 +1,23 @@
+
+// ====================================================================
+// CRUSHSim - CRUSH Simulation web app for Ceph admins
+// ---------------------------------------------------
+// 
+// By Xavier Villaneau, 2015
+// xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+// Claranet SAS, Rennes, France
+// ====================================================================
+// analyse.js - jQuery for interactivity on the Analyze page
+//  - Initializes the display from the cookies
+//  - Manages the choice of the CRUSH maps for the simulation
+//  - Displays the maps, updates the choices for the pool forms
+//  - Handles the submit action, displays any error that might occur
+//
+// Changelog:
+// ----------
+// May 4th 2015 - Initial release
+
+
 $('document').ready(function(){
 	
 	var id_ini, id_fin,

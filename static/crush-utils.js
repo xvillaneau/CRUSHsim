@@ -1,4 +1,22 @@
 
+// ====================================================================
+// CRUSHSim - CRUSH Simulation web app for Ceph admins
+// ---------------------------------------------------
+// 
+// By Xavier Villaneau, 2015
+// xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+// Claranet SAS, Rennes, France
+// ====================================================================
+// crush-utils.js - Defines the CrushUtils object, which offer a few
+// useful CRUSH-related methods such as:
+//  - isOSD: simple test to see if a string is like 'osd.XX' (used a lot)
+//  - mergeBuckets: performs a basic merge of two bucket lists
+//
+// Changelog:
+// ----------
+// May 4th 2015 - Initial release
+
+
 !function(){ 
 	
 	var CrushUtils = {};

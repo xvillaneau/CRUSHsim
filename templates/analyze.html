@@ -1,3 +1,21 @@
+{#
+ ====================================================================
+ CRUSHSim - CRUSH Simulation web app for Ceph admins
+ ---------------------------------------------------
+ 
+ By Xavier Villaneau, 2015
+ xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+ Claranet SAS, Rennes, France
+ ====================================================================
+ analyze.html - Jinja template for the Analyze page
+  - Top: shows the currently selected CRUSH maps, if any
+  - Middle: menu for selecting maps among existing ones
+  - Bottom: Forms for selecting pool properties, and submit button
+
+ Changelog:
+ ----------
+ May 4th 2015 - Initial release
+#}
 {% extends "layout.html" %}
 {% block main %}
 	<h1>CRUSH map selection</h1>

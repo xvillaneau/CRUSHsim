@@ -1,13 +1,22 @@
 
 # ====================================================================
-# CRUSH Simulation web app for Ceph admins
-# ----------------------------------------
+# CRUSHSim - CRUSH Simulation web app for Ceph admins
+# ---------------------------------------------------
 # 
-# By Xavier Villaneau
+# By Xavier Villaneau, 2015
 # xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
 # Claranet SAS, Rennes, France
 # ====================================================================
-# WORK IN PROGRESS - NO VERSIONS YET UNTIL POC IS READY
+# crushsim.py - Core Python script for the server
+#  - Handles everything server-side
+#  - All pages and valid URLs are defined here
+#  - Manages the stored files and how they are accessed
+#  - Calls crushtool  to run the actual simulation
+#
+# Changelog:
+# ----------
+# May 4th 2015 - Initial release
+
 
 # Imports and initialization
 # --------------------------

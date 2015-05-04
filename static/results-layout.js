@@ -1,3 +1,26 @@
+
+// ====================================================================
+// CRUSHSim - CRUSH Simulation web app for Ceph admins
+// ---------------------------------------------------
+// 
+// By Xavier Villaneau, 2015
+// xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+// Claranet SAS, Rennes, France
+// ====================================================================
+// results-layout.js - Custom D3 layout for displaying data migration
+//  - Requires a data matrix, the list of buckets, and the list of
+//	  collapsed buckets.
+//	- Internally uses an improved version of the CRUSH bucket list
+//  - Outputs:
+//    * List of groups (angles for SVG arcs) and their metadata
+//    * List of parents (same as above)
+//    * List of chords (angles for SVG chord objects)
+//
+// Changelog:
+// ----------
+// May 4th 2015 - Initial release
+
+
 d3.layout.crush = function() {
 	// Custom D3 layout for displaying CRUSH results
 	// It is a chord-based display, but all arcs are the same size and the
