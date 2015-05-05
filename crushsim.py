@@ -200,7 +200,7 @@ def page_analyze():
 			statpath = filedir['test_results'] + fileid + '.txt'
 
 			with open(str(statpath), 'w') as statfile:
-				Popen("crushtool --test --show-statistics -i " + comppath + options, shell=True, stdout=statfile).wait()
+				Popen(app.config['CRUSHTOOL_PATH'] + " --test --show-statistics -i " + comppath + options, shell=True, stdout=statfile).wait()
 			return fileid
 
 		stats_ini = make_simulation(params_ini)
