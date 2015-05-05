@@ -26,6 +26,8 @@ You may want to run Flask in a virtual environment, as described in the [Flask d
 
 The `crushtool` binary executable is included with Ceph, and CRUSHsim will by default look for it in `/usr/bin`. However, it seems that `crushtool` works well as a standalone tool. Therefore, you may copy the binary from another system with the same architecture (or build it, whatever) and use it for CRUSHSim without having to install the entire Ceph software. See *Configuration*.
 
+*Notice:* `crushtool` requires some libraries in order to work as a standalone. Right now, I have only identified `libboost-thread` as being necessary. Please tell me if you find any other dependencies.
+
 CRUSHsim does not require an active connection to the Internet to work, since it includes all the libraries it needs in `static/lib`. Those libraries are listed below, and more precisions on their terms of use can be found in the license.
 - [Bootstrap](http://getbootstrap.com/) (© Twitter, Inc)
 - [jQuery](https://jquery.com/) (© jQuery Foundation)
