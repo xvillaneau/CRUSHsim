@@ -11,9 +11,9 @@ CRUSHSim is a small web-based tool intended for use by Ceph administrators, whic
 CRUSHSim has currently only been tested on **Ubuntu 14.04**. Feedback for any other system is welcome.
 
 CRUSHSim requires :
-- Python Flask
-- Flask-Uploads
-- the `crushtool` utility
+- [Flask](http://flask.pocoo.org/)
+- [Flask-Uploads](https://pythonhosted.org/Flask-Uploads/)
+- The `crushtool` utility, a component of the [Ceph](http://ceph.com/) storage system
 
 The two firsts requirements can be installed with `pip`:
 ```
