@@ -6,6 +6,8 @@ CRUSHsim is a small web-based tool intended for use by Ceph administrators, whic
 - modification of pool properties (CRUSH rule, number of replicas)
 - modification of CRUSH rules
 
+CRUSHsim was developed by Xavier Villaneau through the course of an internship at Claranet SAS in Rennes, France. Since this tool couldn't be maintained internally on a regular basis, sharing it to the entire Ceph community was the best thing to do. Therefore, I highly recommend anyone who is interested in CRUSHsim on the long run to fork this repository and work on it seperately, as its maintenance is *guaranteed* to be dropped in the near future.
+
 ## Requirements
 
 CRUSHsim has currently only been tested on **Ubuntu 14.04**. Feedback for any other system is welcome.
