@@ -31,17 +31,55 @@ import uuid
 import json
 import re
 import os
+from sys import exit
 from datetime import datetime
 
 
 app = Flask(__name__)
+
+
+# Configuration management
+# ------------------------
+
+# Get configuration from file
 app.config.from_pyfile('crushsim.cfg', silent= True)
 
+# Require the SECRET_KEY to be set
+if not app.config['SECRET_KEY']:
+	print "Please set the SECRET_KEY in crushsim.cfg"
+	exit(1)
+
+# Default custom configuration (those are not defined in Flask/Werkzeug)
+defaultconf = {
+	'SERVER_ADDR': '127.0.0.1',
+	'SERVER_PORT': 7180,
+	'CRUSHTOOL_PATH': '/usr/bin/crushtool',
+	'FILES_DIR': 'tmp'
+}
+
+# Apply default configuration if not defined in the configuration file
+for c in defaultconf.keys():
+	if not c in app.config.keys():
+		app.config[c] = defaultconf[c]
+
+# Create the directory for temporary files if it doesn't exist
+if not os.path.exists(app.config['FILES_DIR']):
+	os.makedirs(app.config['FILES_DIR'])
+
+# Create the subdirectories and store their paths for easier access
+filedir = {}
+for d in ['txt_maps','json_maps','compiled_maps','test_results']:
+	filedir[d] = app.config['FILES_DIR'] + '/' + d + '/'
+	if not os.path.exists(filedir[d]):
+		os.makedirs(filedir[d])
+
+
 # FlaskUpload configuration
-app.config['UPLOADED_CRUSHUPLOAD_DEST'] = 'tmp/crushtxtfiles'
+app.config['UPLOADED_CRUSHUPLOAD_DEST'] = filedir['txt_maps']
 crushupload = uploads.UploadSet('crushupload', uploads.TEXT)
 uploads.configure_uploads(app, (crushupload))
 
+# strftime filter for Jinja, for easier time handling
 @app.template_filter('strftime')
 def _jinja2_filter_datetime(timestamp, fmt=None):
 	d = datetime.fromtimestamp(timestamp)
@@ -67,8 +105,8 @@ def page_editor_list():
 		crushupload.save(request.files['crushTextFile'],name= fileid + '.')
 		
 		# Generate JSON data in tmp/crushjsondata
-		with open('tmp/crushtxtfiles/'+fileid+'.txt') as crushfile:
-			with open('tmp/crushjsondata/'+fileid+'.json','w') as jsonfile:
+		with open(filedir['txt_maps'] + fileid + '.txt') as crushfile:
+			with open(filedir['json_maps'] + fileid + '.json','w') as jsonfile:
 				crush_unwrap(crushfile, jsonfile)
 
 		flash('CRUSH map uploaded with ID ' + fileid, category='success')
@@ -143,12 +181,12 @@ def page_analyze():
 
 		def make_simulation(params):
 			fileid = params['id']
-			textpath = 'tmp/crushtxtfiles/' + fileid + '.txt'
-			comppath = 'tmp/crushcompiled/' + fileid
+			textpath = filedir['txt_maps'] + fileid + '.txt'
+			comppath = filedir['compiled_maps'] + fileid
 
 			# Compile the CRUSH map
 			if not os.path.isfile(comppath):
-				call(['crushtool','-c',textpath,'-o',comppath])
+				call([app.config['CRUSHTOOL_PATH'],'-c',textpath,'-o',comppath])
 
 			# Check for options
 			options = ''
@@ -159,7 +197,7 @@ def page_analyze():
 				fileid += '_n' + str(params['size'])
 				options += ' --num-rep ' + str(params['size'])
  
-			statpath = 'tmp/crushsimulations/' + fileid + '.txt'
+			statpath = filedir['test_results'] + fileid + '.txt'
 
 			with open(str(statpath), 'w') as statfile:
 				Popen("crushtool --test --show-statistics -i " + comppath + options, shell=True, stdout=statfile).wait()
@@ -183,7 +221,7 @@ def page_results():
 
 @app.route('/simulation/<sim_id>')
 def page_simulation(sim_id):
-	return send_from_directory('tmp/crushsimulations', sim_id + '.txt')
+	return send_from_directory(filedir['test_results'], sim_id + '.txt')
 	
 
 @app.route('/crushdata', methods=['GET','POST'])
@@ -203,12 +241,12 @@ def page_crushdata_noid():
 
 		fileid = str(uuid.uuid4())
 
-		with open('tmp/crushjsondata/'+fileid+'.json','w') as crushjsonfile:
+		with open(filedir['json_maps'] + fileid + '.json','w') as crushjsonfile:
 			crushjsonfile.write(request.data)
 
-		if not os.path.isfile('tmp/crushtxtfiles/'+fileid+'.txt'):
+		if not os.path.isfile(filedir['txt_maps'] + fileid + '.txt'):
 			# The raw CRUSH file doesn't exist, so we'll create it
-			crush_wrap(request.data, 'tmp/crushtxtfiles/'+fileid+'.txt')
+			crush_wrap(request.data, filedir['txt_maps'] + fileid + '.txt')
 
 		flash("New CRUSH map successfully uploaded with ID" + fileid)
 		resp = make_response("It worked!") # TODO : Redirect to analyze page?
@@ -219,9 +257,9 @@ def page_crushdata_noid():
 @app.route('/crushdata/<crush_id>')
 def crushdata_withid(crush_id): 
 	if crush_id.endswith('.json'):
-		return send_from_directory('tmp/crushjsondata', crush_id)
+		return send_from_directory(filedir['json_maps'], crush_id)
 	else:
-		return send_from_directory('tmp/crushtxtfiles', crush_id + '.txt')
+		return send_from_directory(filedir['txt_maps'], crush_id + '.txt')
 
 @app.route('/crushtree/<crush_id>')
 def crushtree(crush_id):
@@ -233,7 +271,7 @@ def crushtree(crush_id):
 	if not crush_exists(crush_id):
 		abort(404)
 	
-	with open('tmp/crushjsondata/' + crush_id + '.json') as crushfile:
+	with open(filedir['json_maps'] + crush_id + '.json') as crushfile:
 		crushdata = json.loads(crushfile.read())
 
 	return json.dumps(crush_makejsontree(crushdata['buckets']))
@@ -242,21 +280,21 @@ def crushtree(crush_id):
 # ----------------
 
 def crush_exists(crushid):
-	return os.path.isfile('tmp/crushtxtfiles/' + crushid + '.txt')
+	return os.path.isfile(filedir['txt_maps'] + crushid + '.txt')
 
 def crush_read_json(crushid):
 	if not crush_exists(crushid):
 		return False
-	with open('tmp/crushjsondata/' + crushid + '.json') as f:
+	with open(filedir['json_maps'] + crushid + '.json') as f:
 		return json.loads(f.read())
 
 def get_saved_maps():
-	files = os.listdir(app.config['UPLOADED_CRUSHUPLOAD_DEST'])
+	files = os.listdir(filedir['txt_maps'])
 	crushmaps = []
 	for f in files:
 		crushmap = {}
 		crushmap['id'] = f[:-4]
-		crushmap['modtime'] = int(os.path.getmtime(app.config['UPLOADED_CRUSHUPLOAD_DEST'] + '/' + f))
+		crushmap['modtime'] = int(os.path.getmtime(filedir['txt_maps'] + f))
 		crushmaps.append(crushmap)
 	return sorted(crushmaps, key=lambda k: k['modtime'])
 
@@ -488,8 +526,6 @@ def crush_makejsontree(crushbuckets):
 # ------------------------
 
 if __name__ == '__main__':
-	server_addr = app.config['SERVER_ADDR'] if app.config['SERVER_ADDR'] else "127.0.0.1"
-	server_port = app.config['SERVER_PORT'] if app.config['SERVER_PORT'] else 5000
-	app.run(host= server_addr, port= server_port)
+	app.run(host= app.config['SERVER_ADDR'], port= app.config['SERVER_PORT'])
 
 # EOF
