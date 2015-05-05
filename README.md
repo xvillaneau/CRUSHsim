@@ -49,7 +49,7 @@ The available options are:
 - `CRUSHTOOL_PATH`: Allows to specify the path to the `crushtool` executable. Defaults to `/usr/bin/crushtool`.
 - `FILES_DIR`: Path to the directory that will hold all temporary files (CRUSH maps, test results...). Defaults to `tmp`.
 
-Also, any other [Flask built-in variable](http://flask.pocoo.org/docs/0.10/config/) can also be set (`DEBUG = True` for example).
+Also, any other [Flask built-in variable](http://flask.pocoo.org/docs/0.10/config/) can also be set (`'DEBUG' = True` for example).
 
 ## What works and what doesn't
 
