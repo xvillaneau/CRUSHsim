@@ -31,20 +31,6 @@ CRUSHsim does not require an active connection to the Internet to work, since it
 - [Math.js](http://mathjs.org/) (© Jos de Jong)
 - [js-cookie](https://github.com/js-cookie/js-cookie) (© Klaus Hartl)
 
-## Usage
-
-To install CRUSHsim itself, simply clone this repository and launch `crushsim.py` with Python:
-```
-git clone https://github.com/xvillaneau/CRUSHsim.git
-cd CRUSHsim
-python crushsim.py
-```
-The tool will then be available by default through a web browser, at http://127.0.0.1:7180/
-
-The _Edit_ page allows you to upload an existing decompiled CRUSH map. You may then edit it using the graphic editor (which is currently quite limited) or upload another CRUSH map.
-
-The _Analyze_ page allows you to decide between which states you want to run the test. You may chose the same CRUSH map and change the pool settings, keep the pool settings and change the map, or both. Then, a graph will show you a visualization of CRUSH placement changes (in numbers of changes, among 1024 tests).
-
 ## Configuration
 
 Right now, CRUSHsim allows a few things to be configured, and this is done by setting the appropriate Python variables in `crushsim.cfg` in the root directory of the project.
@@ -58,6 +44,20 @@ The available options are:
 - `FILES_DIR`: Path to the directory that will hold all temporary files (CRUSH maps, test results...). Defaults to `tmp`.
 
 Also, any other [Flask built-in variable](http://flask.pocoo.org/docs/0.10/config/) can also be set (`'DEBUG' = True` for example).
+
+## Usage
+
+To install CRUSHsim itself, simply clone this repository and launch `crushsim.py` with Python:
+```
+git clone https://github.com/xvillaneau/CRUSHsim.git
+cd CRUSHsim
+python crushsim.py
+```
+The tool will then be available by default through a web browser, at http://127.0.0.1:7180/
+
+The _Edit_ page allows you to upload an existing decompiled CRUSH map. You may then edit it using the graphic editor (which is currently quite limited) or upload another CRUSH map.
+
+The _Analyze_ page allows you to decide between which states you want to run the test. You may chose the same CRUSH map and change the pool settings, keep the pool settings and change the map, or both. Then, a graph will show you a visualization of CRUSH placement changes (in numbers of changes, among 1024 tests).
 
 ## What works and what doesn't
 
