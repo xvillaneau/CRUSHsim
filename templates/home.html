@@ -12,11 +12,54 @@
  Changelog:
  ----------
  May 4th 2015 - Initial release
+ June 15th 2015 - Added CRUSH maps list with name handling
 #}
 {% extends "layout.html" %}
 {% block main %}
-		<div class="jumbotron">
-			<h1>CRUSH simulation tool</h1>
-			<p>This is still under development, and aims to enable Ceph admins to predict large data migrations following changes in topology or CRUSH behaviour.</p>
+<div class="jumbotron">
+	<h1>CRUSH simulation tool</h1>
+	<p>This is still under development, and aims to enable Ceph admins to predict large data migrations following changes in topology or CRUSH behaviour.</p>
+</div>
+<div class="row">
+	{# Two-column setup for showing saved CRUSH maps #}
+	<div class="col-md-6">
+		{# List of saved maps. See static/maps-list.js for more details #}
+		<h2>Saved CRUSH maps</h2>
+		<div class="crush-maps-list">
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Last modified</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
 		</div>
+	</div>
+	<div class="col-md-6">
+		{# Preview of a selected CRUSH map #}
+		<h2>CRUSH map preview</h2>
+		<p>Click on a CRUSH map in the list to see its contents</p>
+		<pre class="panel panel-default pre-scrollable" id="crush-map-preview">
+		</pre>
+	</div>
+</div>
+{# Uploading form #}
+<h2>Upload a CRUSH map</h2>
+<form action="" method=POST enctype="multipart/form-data">
+	<div class="form-group">
+		<label for="crushTexttFile">CRUSH map text file</label>
+		<input type="file" id="crushTextFile" name="crushTextFile">
+		<p class="help-block">This should be a valid <b>decompiled text</b> CRUSH map</p>
+		<input type="text" id="crushTextName" name="crushTextName">
+	</div>
+	<button type="submit" class="btn btn-default">Upload and edit</button>
+</form>
 {% endblock %}
+{% block footer %}
+<script src="{{ url_for('static', filename='maps-list.js') }}"></script>
+{% endblock %}
+{# vim: set syntax=htmljinja ts=4 sw=4 autoindent:#}

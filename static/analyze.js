@@ -16,13 +16,14 @@
 // Changelog:
 // ----------
 // May 4th 2015 - Initial release
+// June 15th 2015 - Now includes mapRowButton for use with maps-init.js
 
 
 $('document').ready(function(){
 	
 	var id_ini, id_fin,
 		div_ini, div_fin;
-
+	
 	document.getElementById('pool-ini-rule').value = Cookies.get('rule_ini');
 	document.getElementById('pool-ini-size').value = Cookies.get('size_ini');
 	document.getElementById('pool-ini-minsize').value = Cookies.get('minsize_ini');
@@ -79,16 +80,24 @@ $('document').ready(function(){
 	updateCrushPreview('ini', Cookies.get('id_ini'));
 	updateCrushPreview('fin', Cookies.get('id_fin'));
 
-	// Handles click on the 'Init.' selection buttons
-	$('.crush-map-avail .btn-ini').on('click', function() {
-		updateCrushPreview("ini", $(this).parent().siblings('.crush-map-id').text());
-		updateCrushIni(id_ini);
-	});
+	// Function used by maps-list.js to create the buttons AND their handlers
+	// Previously defined globally in templates/analyze.html, it's sketchy but it works
+	mapRowButton =function(row){
+		// Adds two cells, one for each button
+		var cellini = $('<td>').html('<span class="btn btn-default btn-xs btn-ini">Init.</span>').appendTo(row);
+		var cellfin = $('<td>').html('<span class="btn btn-default btn-xs btn-fin">Fin.</span>').appendTo(row);
 
-	// Handles click on the 'Fin.' selection buttons
-	$('.crush-map-avail .btn-fin').on('click', function() {
-		updateCrushPreview("fin", $(this).parent().siblings('.crush-map-id').text());
-	});
+		// Handles click on the 'Init.' selection buttons
+		cellini.children().on('click', function() {
+			updateCrushPreview("ini", $(this).parent().parent().prop('crushUuid'));
+			//updateCrushIni(id_ini);
+		});
+
+		// Handles click on the 'Fin.' selection buttons
+		cellfin.children().on('click', function() {
+			updateCrushPreview("fin", $(this).parent().parent().prop('crushUuid'));
+		});
+	};
 
 	function buttonCheck() {
 		var rule = Cookies.get('rule_ini');
@@ -129,3 +138,4 @@ $('document').ready(function(){
 
 	buttonCheck();
 });
+// vim: set ts=4 sw=4 autoindent:
