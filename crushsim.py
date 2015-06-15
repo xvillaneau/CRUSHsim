@@ -227,7 +227,10 @@ def page_simulation(sim_id):
 @app.route('/crushdata', methods=['GET','POST'])
 def page_crushdata_noid():
 	if request.method == 'GET':
-		return "There should be a page here"
+		# Return JSON list of all maps and their metadata
+		resp = make_response(json.dumps(get_saved_maps()))
+		resp.mimetype = "application/json"
+		return resp
 
 	if request.method == 'POST':
 
