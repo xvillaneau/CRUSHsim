@@ -1,21 +1,41 @@
 
-// jQuery functions for CRUSHsim homepage
+function mapRowButton(row) {
 
-$('document').ready(function(){
+	function onRenameClick() {
+		var newname = $('.crush-maps-list input').prop('value');
+		var crushid = row.prop('crushUuid');
+		$.ajax(
+			'/crushdata/'+crushid, 
+			{
+				'method': 'PUT',
+				'contentType': 'application/json',
+				'data': JSON.stringify({'name': newname}),
+				'success': function(){
+					row.children().first().text(newname);
+					row.prop('crushName', newname);
+					row.next().remove();
+					row.find('button').show();
+				}
+			}
+		);
+	}
 
-	$('.crush-map-avail').on('click', function(){
-		// When an element in the "Saved CRUSH maps" is clicked...
+	function makeRenameRow() {
+		$(this).hide();
+		row.after('<tr>')
+		 .next().addClass('active').append('<td>')
+		 .children().attr('colspan',2).append('<input>')
+		 .children().addClass('form-control').attr('type','text')
+		  .attr('value', (typeof row.prop('crushName') != 'undefined' ? row.prop('crushName') : null))
+		 .parent().after('<td>')
+		 .next().append('<button>')
+		 .children().attr('type','submit').addClass('btn btn-primary btn-xs').text('Rename').on('click', onRenameClick);
+	};
 
-		// The 'info' class is removed from the previous active <tr>
-		$('.crush-map-avail.info').removeClass('info');
-		$(this).addClass('info');
+	row.append('<td>')
+	 .children().last().append('<button>')
+	 .children().addClass('btn btn-default btn-xs').text('Rename').on('click', makeRenameRow);
+	
+};
 
-		// The preview panel is updated
-		var id = $(this).children('.crush-map-id').text();
-		$.get('/crushdata/'+id, function(data) {
-			// Get data, REST is our friend !
-			$('#crush-map-preview').text(data);
-		});
-	});
-
-});
+// vim: set ts=4 sw=4 autoindent:

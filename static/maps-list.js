@@ -66,6 +66,7 @@ $('document').ready(function(){
 
 					// Add the appropriate class, the crush uuid and property the handler
 					maprow.addClass('crush-map-avail').prop('crushUuid', data[i].id).on('click', mapRowClick);
+					if (typeof data[i].name != 'undefined') maprow.prop('crushName', data[i].name);
 
 					// Use the name if it's defined, else write the ID
 					var rowtext = (typeof(data[i].name) != 'undefined' ? data[i].name : data[i].id);
