@@ -16,6 +16,7 @@
 # Changelog:
 # ----------
 # May 4th 2015 - Initial release
+# June 15th 2015 - Now handles CRUSH map metadata and added GET/crushdata
 
 
 # Imports and initialization
@@ -96,23 +97,6 @@ def page_home():
 
 @app.route('/editor', methods=['GET','POST'])
 def page_editor_list():
-	if request.method == 'POST' and 'crushTextFile' in request.files:
-		
-		fileid = str(uuid.uuid4())
-		
-		# Upload text file to tmp/crushtxtfiles
-		# The '.' at the end tells FlaskUpload to append file extension
-		crushupload.save(request.files['crushTextFile'],name= fileid + '.')
-		
-		# Generate JSON data in tmp/crushjsondata
-		with open(filedir['txt_maps'] + fileid + '.txt') as crushfile:
-			with open(filedir['json_maps'] + fileid + '.json','w') as jsonfile:
-				crush_unwrap(crushfile, jsonfile)
-
-		flash('CRUSH map uploaded with ID ' + fileid, category='success')
-		
-		return redirect('/editor/'+fileid)
-
 	return render_template('editor-list.html', crushmaps= get_saved_maps())
 
 
@@ -233,28 +217,54 @@ def page_crushdata_noid():
 		return resp
 
 	if request.method == 'POST':
+		
+		if 'crushTextFile' in request.files:
+			# The request we're getting is for a brand new CRUSH map
+		
+			fileid = str(uuid.uuid4())
+			
+			# Upload text file to tmp/crushtxtfiles
+			# The '.' at the end tells FlaskUpload to append file extension
+			crushupload.save(request.files['crushTextFile'],name= fileid + '.')
+			
+			# Metadata handling
+			metadata = {}
+			if 'crushTextName' in request.form:
+				metadata['name'] = request.form['crushTextName']
 
-		# We'll force JSON input.
-		# I might allow text CRUSH maps later, but I'm not sure about security here
-		try:
-			crushdata = json.loads(request.data)
-		except TypeError:
-			flash("Upload failed, data was not valid JSON", category='error')
-			abort(415)
+			if len(metadata > 0):
+				with open(filedir['txt_maps'] + fileid + '.metadata.json','w') as mdf:
+					mdf.write(json.dumps(metadata))
 
-		fileid = str(uuid.uuid4())
+			# Generate JSON data in tmp/crushjsondata
+			with open(filedir['txt_maps'] + fileid + '.txt') as crushfile:
+				with open(filedir['json_maps'] + fileid + '.json','w') as jsonfile:
+					crush_unwrap(crushfile, jsonfile)
 
-		with open(filedir['json_maps'] + fileid + '.json','w') as crushjsonfile:
-			crushjsonfile.write(request.data)
+			flash('CRUSH map uploaded with ID ' + fileid, category='success')
+			
+			return redirect('/')
 
-		if not os.path.isfile(filedir['txt_maps'] + fileid + '.txt'):
-			# The raw CRUSH file doesn't exist, so we'll create it
-			crush_wrap(request.data, filedir['txt_maps'] + fileid + '.txt')
+		else:
+			try:
+				crushdata = json.loads(request.data)
+			except TypeError:
+				flash("Upload failed, data was not valid JSON", category='error')
+				abort(415)
 
-		flash("New CRUSH map successfully uploaded with ID" + fileid)
-		resp = make_response("It worked!") # TODO : Redirect to analyze page?
-		resp.set_cookie('id_fin', value=fileid)
-		return resp
+			fileid = str(uuid.uuid4())
+
+			with open(filedir['json_maps'] + fileid + '.json','w') as crushjsonfile:
+				crushjsonfile.write(request.data)
+
+			if not os.path.isfile(filedir['txt_maps'] + fileid + '.txt'):
+				# The raw CRUSH file doesn't exist, so we'll create it
+				crush_wrap(request.data, filedir['txt_maps'] + fileid + '.txt')
+
+			flash("New CRUSH map successfully uploaded with ID" + fileid)
+			resp = make_response("It worked!") # TODO : Redirect to analyze page?
+			resp.set_cookie('id_fin', value=fileid)
+			return resp
 
 
 @app.route('/crushdata/<crush_id>')
@@ -550,4 +560,4 @@ def crush_makejsontree(crushbuckets):
 if __name__ == '__main__':
 	app.run(host= app.config['SERVER_ADDR'], port= app.config['SERVER_PORT'])
 
-# EOF
+# vim: set ts=4 sw=4 autoindent:

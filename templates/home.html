@@ -49,9 +49,9 @@
 </div>
 {# Uploading form #}
 <h2>Upload a CRUSH map</h2>
-<form action="" method=POST enctype="multipart/form-data">
+<form action="/crushdata" method=POST enctype="multipart/form-data">
 	<div class="form-group">
-		<label for="crushTexttFile">CRUSH map text file</label>
+		<label for="crushTextFile">CRUSH map text file</label>
 		<input type="file" id="crushTextFile" name="crushTextFile">
 		<p class="help-block">This should be a valid <b>decompiled text</b> CRUSH map</p>
 		<input type="text" id="crushTextName" name="crushTextName">
