@@ -289,13 +289,32 @@ def crush_read_json(crushid):
 		return json.loads(f.read())
 
 def get_saved_maps():
-	files = os.listdir(filedir['txt_maps'])
+	"""
+	Returns a list of all stored CRUSH maps as dictionnaries.
+	If a metadata file is present, its data will be included.
+	"""
+
 	crushmaps = []
+
+	files = os.listdir(filedir['txt_maps'])
 	for f in files:
-		crushmap = {}
-		crushmap['id'] = f[:-4]
-		crushmap['modtime'] = int(os.path.getmtime(filedir['txt_maps'] + f))
-		crushmaps.append(crushmap)
+		if f.endswith('.txt'):
+			# Take only the data files, not the metadata
+			crushmap = {}
+
+			# The most important: the UUID of the map
+			crushmap['id'] = f[:-4]
+			# The creation time of the map. TODO: Maybe put it in the metadata ?
+			crushmap['modtime'] = int(os.path.getmtime(filedir['txt_maps'] + f))
+
+			# Check if a metadata file exists, if it does add its data to the dictionnary
+			if os.path.isfile(filedir['txt_maps'] + crushmap['id'] + ".metadata.json"):
+				with open(filedir['txt_maps'] + crushmap['id'] + ".metadata.json") as md:
+					crushmap.update(json.loads(md.read()))
+
+			crushmaps.append(crushmap)
+
+	# Finally, sort maps by creation time before returning the list
 	return sorted(crushmaps, key=lambda k: k['modtime'])
 
 
