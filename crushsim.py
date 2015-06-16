@@ -232,7 +232,7 @@ def page_crushdata_noid():
 			if 'crushTextName' in request.form:
 				metadata['name'] = request.form['crushTextName']
 
-			if len(metadata > 0):
+			if len(metadata) > 0:
 				with open(filedir['txt_maps'] + fileid + '.metadata.json','w') as mdf:
 					mdf.write(json.dumps(metadata))
 
