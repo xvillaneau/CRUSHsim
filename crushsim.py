@@ -69,7 +69,7 @@ if not os.path.exists(app.config['FILES_DIR']):
 
 # Create the subdirectories and store their paths for easier access
 filedir = {}
-for d in ['txt_maps','json_maps','compiled_maps','test_results']:
+for d in ['txt_maps','json_maps','compiled_maps','test_results', 'simulate']:
 	filedir[d] = app.config['FILES_DIR'] + '/' + d + '/'
 	if not os.path.exists(filedir[d]):
 		os.makedirs(filedir[d])
@@ -207,6 +207,76 @@ def page_results():
 def page_simulation(sim_id):
 	return send_from_directory(filedir['test_results'], sim_id + '.txt')
 	
+
+@app.route('/api/simulate', methods=['PUT'])
+def api_simulate():
+	"""
+	Will run a simulation on the sent crushmap.
+	So we're writing a file on the server then using an executable on it.
+	Do I *really* have to explain why it can be dangerous ?
+	But for now there's no way around it.
+	"""
+
+	# Test the request and its payload
+	# Is it text? Can it be read? Is it empty?
+	if request.mimetype != "text/plain":
+		return "Bad request, expecting CRUSH map", 400
+	try:
+		crushmap = request.get_data()
+	except:
+		return "Bad request, expecting CRUSH map", 400
+	if (crushmap == ""):
+		return "Bad request, expecting CRUSH map", 400
+		
+	# Now try to get the arguments
+	try:
+		args = request.args
+	except:
+		return "URL argument parsing has failed for some reason", 500
+	
+	# Test if rule and size are given. Otherwise, refuse to process
+	if not ('rule' in args and args['rule'].isdigit()):
+		return "Please specify a valid rule number to apply", 400
+	if not ('size' in args and args['size'].isdigit()):
+		return "Please specify a valid size to apply", 400
+	
+	# Assign a random uuid for the operation, build two filenames from it
+	tid = str(uuid.uuid4())
+	fntxtcrush = filedir['simulate'] + tid + '.txt'
+	fnbincrush = filedir['simulate'] + tid + '.bin'
+
+	# Now write the input we were given in the file
+	with open(fntxtcrush, 'w') as ftxtcrush:
+		ftxtcrush.write(crushmap)
+
+	# Make it into a binary CRUSH map.
+	# TODO: catch compilation error
+	simcompstr = app.config['CRUSHTOOL_PATH'] + ' -c ' + fntxtcrush + ' -o ' + fnbincrush
+	Popen(simcompstr, shell=True).wait()
+
+	os.remove(fntxtcrush)
+
+	# Build options for the simulation
+	options = ''
+	options += ' --rule ' + args['rule']
+	options += ' --num-rep ' + args['size']
+	
+	# If a certain number of PGs is asked, include it
+	if 'pgs' in args and args['pgs'].isdigit():
+		options += ' --min-x 0'
+		options += ' --max-x ' + str(int(args['pgs']) - 1)
+
+	# Execute the simulation itself
+	# TODO: catch simulation error
+	simexecstr = app.config['CRUSHTOOL_PATH'] + " --test --show-statistics -i " + fnbincrush + options
+	simproc = Popen(simexecstr, shell=True, stdout=PIPE)
+	output = simproc.stdout.read()
+	
+	os.remove(fnbincrush)
+
+	# Everything went well (I hope), let's send the results!
+	return output
+
 
 @app.route('/crushdata', methods=['GET','POST'])
 def page_crushdata_noid():
