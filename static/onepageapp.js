@@ -23,11 +23,14 @@ $(document).ready(function(){
 	
 });
 
-var crushsim = {};
+crushsim = {}
 
-crushsim.map = function(){
+crushsim.map = function() {
+	// JavaScript "Class" for managing a CRUSH map.
+	// Stores every information in subclasses, then allows
+	// import and export in CRUSH text format, transparently
+	
 	var map = {},
-		textMap,
 		buckets,
 		devices,
 		rules,
@@ -36,18 +39,24 @@ crushsim.map = function(){
 
 
 	function bucketsConstructor() {
+		// Class for buckets
 		var bucketsObj = {},
 			bList = [],
 			byId = {},
 			byName = {};
 
 		bucketsObj.parse = function(lines) {
+			// Given the lines corresponding to a bucket in the CRUSH map
+			// text format, will parse and import the data.
+			// TODO: It seems it becomes complicated if the alg is not 'straw'
+			// I'll fix that later
 			var obj = {'items': [], 'weight': 0};
 
 			for (var i = 0; i < lines.length; i++) {
 				var l = lines[i].split(' ');
 
 				if (i == 0) {
+					// The first line is special and holds the name and the type
 					obj.name = l[1];
 					obj.type_name = l[0];
 					obj.type_id = types.byName(l[0]);
@@ -55,13 +64,15 @@ crushsim.map = function(){
 				};
 
 				if (l[0] == 'hash') {
+					// For some reasons, conversion is necessary
 					if (l[1] == '0') obj.hash = 'rjenkins1';
 					// TODO: other hashs
 				}
 				else if (l[0] == 'item') {
 					var item = {}
 					if (l[1].startsWith('osd.')) {
-						item.weight = parseInt((parseFloat(l[3]) * 0x10000 - .5).toFixed());
+						// If the item is an OSD, get its weight
+						item.weight = Math.floor(parseFloat(l[3]) * 0x10000);
 						item.id = parseInt(l[1].slice(4));
 					} else {
 						if (typeof byName[l[1]] == 'undefined') return false;
@@ -73,6 +84,7 @@ crushsim.map = function(){
 					obj.items.push(item)
 				}
 				else if (l[0] == 'id') obj.id = parseInt(l[1]);
+				else if (l[0] == '}') continue; // Shouldn't happen, but just in case
 				else obj[l[0]] = l[1];
 			}
 			
@@ -84,7 +96,7 @@ crushsim.map = function(){
 		};
 
 		bucketsObj.dump = function() {
-			var output = '# buckets\n';
+			var output = '';
 			for (var i = 0; i < bList.length; i++) {
 				var b = bList[i];
 
@@ -112,7 +124,6 @@ crushsim.map = function(){
 				output += '}\n';
 			};
 
-			output += '\n'
 			return output;
 		};
 
@@ -142,10 +153,9 @@ crushsim.map = function(){
 		};
 
 		devsObj.dump = function() {
-			var output = '# devices\n'
+			var output = '';
 			for (var i = 0; i < devs.length; i++)
 				output += 'device ' + devs[i] + ' osd.' + devs[i] + '\n' ;
-			output += '\n';
 			return output;
 		};
 
@@ -199,7 +209,7 @@ crushsim.map = function(){
 		};
 
 		rulesObj.dump = function() {
-			var output = '# rules\n';
+			var output = '';
 			
 			for (var i = 0; i < rulesList.length; i++) {
 				var r = rulesList[i];
@@ -231,7 +241,6 @@ crushsim.map = function(){
 				output += '}\n';
 			};
 
-			output += '\n';
 			return output;
 		};
 
@@ -255,10 +264,9 @@ crushsim.map = function(){
 		};
 
 		tunsObj.dump = function() {
-			var output = '# tunables\n';
+			var output = '';
 			for (var k in tuns)
 				output += 'tunable ' + k + ' ' + tuns[k] + '\n';
-			output += '\n';
 			return output;
 		};
 
@@ -294,10 +302,9 @@ crushsim.map = function(){
 		};
 
 		typesObj.dump = function() {
-			var output = '# types\n';
+			var output = '';
 			for (var k in byId) 
 				output += 'type ' + k + ' ' + byId[k] + '\n';
-			output += '\n';
 			return output;
 		};
 
@@ -313,7 +320,7 @@ crushsim.map = function(){
 
 
 
-	function textMapToJson(input){
+	function parseTextMap(input) {
 		var list = input.split('\n'),
 			line, block,
 			inBlock = '';
@@ -346,13 +353,19 @@ crushsim.map = function(){
 
 	map.textMap = function(m){
 		if (!arguments.length) {
-			return tunables.dump()
-			     + devices.dump()
-				 + types.dump()
-				 + buckets.dump()
-				 + rules.dump();
+			return '# begin crush map\n'
+				+ tunables.dump()
+				+ '\n# devices\n'
+				+ devices.dump()
+				+ '\n# types\n'
+				+ types.dump()
+				+ '\n# buckets\n'
+				+ buckets.dump()
+				+ '\n# rules\n'
+				+ rules.dump()
+				+ '\n# end crush map';
 		}
-		else textMapToJson(m);
+		else parseTextMap(m);
 	};
 
 	map.jsonMap = function(){
