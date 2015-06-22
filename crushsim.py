@@ -199,7 +199,6 @@ def page_analyze():
 
 @app.route('/results')
 def page_results():
-
 	return render_template('results.html')
 
 
@@ -207,6 +206,11 @@ def page_results():
 def page_simulation(sim_id):
 	return send_from_directory(filedir['test_results'], sim_id + '.txt')
 	
+
+@app.route('/onepageapp')
+def page_onepageapp():
+	return render_template('onepageapp.html')
+
 
 @app.route('/api/simulate', methods=['PUT'])
 def api_simulate():

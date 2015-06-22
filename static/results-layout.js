@@ -402,3 +402,4 @@ d3.layout.crush = function() {
 
 	return layout;
 };
+// vim: set ts=4 sw=4 autoindent:
