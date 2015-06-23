@@ -251,7 +251,19 @@ crushsim.crushmap = function() {
 
 		rulesObj.json = function() {
 			return rulesList;
-		}
+		};
+
+		rulesObj.getByName = function(name) {
+			if (byName.hasOwnProperty(name)) {
+				return rulesList[byName[name]];
+			};
+		};
+
+		rulesObj.getByRuleset = function(ruleset) {
+			if (byRuleset.hasOwnProperty(ruleset)) {
+				return rulesList[byRuleset[ruleset]];
+			};
+		};
 
 		return rulesObj;
 	};
@@ -381,6 +393,42 @@ crushsim.crushmap = function() {
 			'tunables': tunables.json(),
 			'types': types.json()
 		};
+	};
+	
+	map.simulate = function(rule, size, pgs, callback) {
+		if (arguments.length < 3 || arguments.length > 4) return false;
+
+		if (arguments.length == 3) {callback = pgs; pgs = null;}
+		if (typeof callback != 'function') return false;
+
+		if (typeof size != 'number') return false;
+		if (size != Math.floor(size)) return false;
+
+		if (typeof rule == 'string') {
+			var r = rules.getByName(rule);
+			if (typeof r == 'undefined') return false;
+			rule = r.ruleset;
+		}
+		else if (typeof rule != 'number') return false;
+		else if (typeof rules.getByRuleset(rule) == 'undefined') return false;
+
+		var url = '/api/simulate'
+			+ '?rule=' + rule
+			+ '&size=' + size;
+
+		if (pgs != null && typeof pgs == 'number' && pgs == Math.floor(pgs))
+			url += '&pgs=' + pgs;
+
+		for (var osd in reweights)
+			url += '&osd.' + osd + '=' + reweights[osd];
+
+		$.ajax({
+			'url': url,
+			'contentType': 'text/plain',
+			'data': this.textMap(),
+			'method': 'PUT',
+			'success': callback
+		});
 	};
 
 	map.osdReweight = function(osd, weight) {

@@ -256,19 +256,20 @@ def api_simulate():
 	# Make it into a binary CRUSH map.
 	# TODO: catch compilation error
 	simcompstr = app.config['CRUSHTOOL_PATH'] + ' -c ' + fntxtcrush + ' -o ' + fnbincrush
+	app.logger.debug("API/Simulate - Executing " + simcompstr)
 	Popen(simcompstr, shell=True).wait()
 
 	os.remove(fntxtcrush)
 
 	# Build options for the simulation
 	options = ''
-	options += ' --rule ' + args.pop('rule')
-	options += ' --num-rep ' + args.pop('size')
+	options += ' --rule ' + args['rule']
+	options += ' --num-rep ' + args['size']
 	
 	# If a certain number of PGs is asked, include it
 	if 'pgs' in args and args['pgs'].isdigit():
 		options += ' --min-x 0'
-		options += ' --max-x ' + str(int(args.pop('pgs')) - 1)
+		options += ' --max-x ' + str(int(args['pgs']) - 1)
 	
 	# Now, only weights should remain
 	for a in args.keys():
@@ -282,11 +283,12 @@ def api_simulate():
 				continue
 			if (w >= 0 and w <= 1):
 				# If weight is valid
-				options += ' --weight ' + a[4:] + ' ' + args.pop(a)
+				options += ' --weight ' + a[4:] + ' ' + args[a]
 
 	# Execute the simulation itself
 	# TODO: catch simulation error
 	simexecstr = app.config['CRUSHTOOL_PATH'] + " --test --show-statistics -i " + fnbincrush + options
+	app.logger.debug("API/Simulate - Executing " + simexecstr)
 	simproc = Popen(simexecstr, shell=True, stdout=PIPE)
 	output = simproc.stdout.read()
 	
