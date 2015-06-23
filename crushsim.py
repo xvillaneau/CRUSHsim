@@ -212,6 +212,13 @@ def page_onepageapp():
 	return render_template('onepageapp.html')
 
 
+@app.route('/onepageapp/<crush_id>')
+def page_onepageapp_id(crush_id):
+	response = make_response(render_template('onepageapp.html'))
+	response.set_cookie('map_id', crush_id)
+	return response
+
+
 @app.route('/api/simulate', methods=['PUT'])
 def api_simulate():
 	"""

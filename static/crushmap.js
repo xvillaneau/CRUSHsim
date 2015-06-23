@@ -117,7 +117,22 @@ crushsim.crushmap = function() {
 
 		bucketsObj.json = function() {
 			return bList;
-		}
+		};
+
+		bucketsObj.init = function() {
+			bList = [{
+				'id': -1,
+				'name': 'default',
+				'type': 'root',
+				'type_id': 10,
+				'alg': 'straw',
+				'hash': 'rjenkins1',
+				'weight': 0,
+				'items': []
+			}];
+			byId = {}; byId[-1] = 0;
+			byName = {'default': 0};
+		};
 
 		return bucketsObj;
 	};
@@ -156,6 +171,10 @@ crushsim.crushmap = function() {
 
 		devsObj.rawList = function() {
 			return devs;
+		};
+
+		devsObj.init = function() {
+			devs = [];
 		};
 
 		return devsObj;
@@ -224,7 +243,7 @@ crushsim.crushmap = function() {
 					if (s.op == 'emit') output += 'emit';
 					else if (s.op == 'take') output += 'take ' + s.item_name;
 					else {
-						output += s.op.split('_')[0] + ' ' + s.op.split('_')[1];
+						output += s.op.split('_')[0] + ' ' + s.op.split('_')[1] + ' ';
 						output += s.num + ' type ' + s.type;
 					}
 					output += '\n';
@@ -252,6 +271,23 @@ crushsim.crushmap = function() {
 			};
 		};
 
+		rulesObj.init = function() {
+			rulesList = [{
+				'name': 'replicated_ruleset',
+				'ruleset': 0,
+				'type': 1,
+				'min_size': 1,
+				'max_size': 10,
+				'steps': [
+					{'op': 'take', 'item': 0, 'item_name': 'default'},
+					{'op': 'chooseleaf_firstn', 'num': 0, 'type': 'host'},
+					{'op': 'emit'}
+				]
+			}];
+			byName = {'replicated_ruleset': 0};
+			byRuleset = {0: 0};
+		};
+
 		return rulesObj;
 	};
 	rules = rulesConstructor();
@@ -276,6 +312,15 @@ crushsim.crushmap = function() {
 
 		tunsObj.json = function() {
 			return tuns;
+		};
+
+		tunsObj.init = function() {
+			tuns = {};
+			// I think these are the default settings. It might depend on Ceph's version
+			tuns.choose_local_tries = 0;
+			tuns.choose_local_fallback_tries = 0;
+			tuns.choose_total_tries = 50;
+			tuns.chooseleaf_descend_once = 1;
 		};
 
 		return tunsObj;
@@ -316,6 +361,35 @@ crushsim.crushmap = function() {
 			var output = [];
 			for (var k in byId) output.push({'id_type': k, 'name': byId[k]});
 			return output;
+		};
+
+		typesObj.init = function() {
+			byId = {
+				0: 'osd',
+				1: 'host',
+				2: 'chassis',
+				3: 'rack',
+				4: 'row',
+				5: 'pdu',
+				6: 'pod',
+				7: 'room',
+				8: 'datacenter',
+				9: 'region',
+				10: 'root'
+			};
+			byName = {
+				'osd': 0,
+				'host': 1,
+				'chassis': 2,
+				'rack': 3,
+				'row': 4,
+				'pdu': 5,
+				'pod': 6,
+				'room': 7,
+				'datacenter': 8,
+				'region': 9,
+				'root': 10
+			};
 		};
 
 		return typesObj;
@@ -381,6 +455,14 @@ crushsim.crushmap = function() {
 			'types': types.json()
 		};
 	};
+	
+	map.init = function() {
+		buckets.init();
+		devices.init();
+		rules.init();
+		tunables.init();
+		types.init();
+	}
 	
 	map.simulate = function(rule, size, pgs, callback) {
 		if (arguments.length < 3 || arguments.length > 4) return false;

@@ -10,7 +10,7 @@
 // onepageapp.js - First draft for the CRUSHsim one page application
 //
 
-var apph, appw;
+var apph, appw, map;
 
 $(document).ready(function(){
 	apph = $(window).height()
@@ -20,13 +20,23 @@ $(document).ready(function(){
 	$('html').css('width', $(window).width());
 	$('html').css('height', $(window).height());
 	
-	$('#btn-welcome-new').on('click', function() {
-		$('#welcomeModal .selector').hide();
-		$('#welcomeModal .upload-form').show();
-	});
+	var init_id = Cookies.get('map_id');
+	map = crushsim.crushmap();
 
-	$('#welcomeModal').modal();
+	if (typeof init_id == undefined) {
+		map.init();
 
+		$('#btn-welcome-new').on('click', function() {
+			$('#welcomeModal .selector').hide();
+			$('#welcomeModal .upload-form').show();
+		});
+
+		$('#welcomeModal').modal();
+	} else {
+		$.get('/api/crushmap/'+init_id, function(data) {
+			map.textMap(data);
+		})
+	};
 	
 });
 
