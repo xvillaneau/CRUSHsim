@@ -25,12 +25,13 @@ $(document).ready(function(){
 
 crushsim = {}
 
-crushsim.map = function() {
+crushsim.crushmap = function() {
 	// JavaScript "Class" for managing a CRUSH map.
 	// Stores every information in subclasses, then allows
 	// import and export in CRUSH text format, transparently
 	
 	var map = {},
+		reweights = {},
 		buckets,
 		devices,
 		rules,
@@ -164,6 +165,10 @@ crushsim.map = function() {
 			for (var i = 0; i < devs.length; i++)
 				output.push({'id': devs[i], 'name': 'osd.'+devs[i]});
 			return output;
+		};
+
+		devsObj.rawList = function() {
+			return devs;
 		};
 
 		return devsObj;
@@ -376,6 +381,30 @@ crushsim.map = function() {
 			'tunables': tunables.json(),
 			'types': types.json()
 		};
+	};
+
+	map.osdReweight = function(osd, weight) {
+		// Will temporarily reweight an OSD as in "ceph osd reweight"
+		// This does NOT change the CRUSH map
+
+		// Few test to check if the arguments are good
+		if (! osd in devices.rawList()) return false;
+		if (typeof weight != 'number') return false;
+		if (weight < 0 || weight > 1) return false;
+
+		// A weight of 1 means the OSD is in
+		if (weight == 1 && reweights.hasOwnProperty(osd)) delete reweights[osd];
+		// Else, store the wanted weight
+		else reweights[osd] = weight;
+
+		return true;
+	};
+
+	map.osdDown = function(osd) {
+		// Few test to check if the arguments are good
+		if (! osd in devices.rawList()) return false;
+		this.osdReweight(osd, 0);
+		return true;
 	};
 
 	return map;
