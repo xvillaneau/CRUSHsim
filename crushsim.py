@@ -298,6 +298,21 @@ def api_simulate():
 	return output
 
 
+@app.route('/api/crushmap', methods=['GET'])
+def api_crushmap():
+	if request.method == 'GET':
+		# Return JSON list of all maps and their metadata
+		resp = make_response(json.dumps(get_saved_maps()))
+		resp.mimetype = "application/json"
+		return resp
+
+
+@app.route('/api/crushmap/<crush_id>', methods=['GET'])
+def api_crushmap_id(crush_id): 
+	if request.method == "GET":
+		return send_from_directory(filedir['txt_maps'], crush_id + '.txt')
+
+
 @app.route('/crushdata', methods=['GET','POST'])
 def page_crushdata_noid():
 	if request.method == 'GET':
