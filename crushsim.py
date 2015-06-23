@@ -262,13 +262,27 @@ def api_simulate():
 
 	# Build options for the simulation
 	options = ''
-	options += ' --rule ' + args['rule']
-	options += ' --num-rep ' + args['size']
+	options += ' --rule ' + args.pop('rule')
+	options += ' --num-rep ' + args.pop('size')
 	
 	# If a certain number of PGs is asked, include it
 	if 'pgs' in args and args['pgs'].isdigit():
 		options += ' --min-x 0'
-		options += ' --max-x ' + str(int(args['pgs']) - 1)
+		options += ' --max-x ' + str(int(args.pop('pgs')) - 1)
+	
+	# Now, only weights should remain
+	for a in args.keys():
+		if (a.startswith('osd.') and a[4:].isdigit()):
+			# If argument is an OSD
+			try:
+				w = float(args[a])
+			except ValueError:
+				# If the value is not a float, go to next argument
+				# TODO: send back 400 error, maybe ?
+				continue
+			if (w >= 0 and w <= 1):
+				# If weight is valid
+				options += ' --weight ' + a[4:] + ' ' + args.pop(a)
 
 	# Execute the simulation itself
 	# TODO: catch simulation error
