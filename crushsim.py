@@ -298,7 +298,7 @@ def api_simulate():
 	return output
 
 
-@app.route('/api/crushmap', methods=['GET'])
+@app.route('/api/crushmap', methods=['GET','POST'])
 def api_crushmap():
 	if request.method == 'GET':
 		# Return JSON list of all maps and their metadata
@@ -306,6 +306,36 @@ def api_crushmap():
 		resp.mimetype = "application/json"
 		return resp
 
+	if request.method == 'POST':
+		
+		if 'crushTextFile' in request.files:
+			# The request we're getting is for a brand new CRUSH map
+		
+			fileid = str(uuid.uuid4())
+			
+			# Upload text file to tmp/crushtxtfiles
+			# The '.' at the end tells FlaskUpload to append file extension
+			crushupload.save(request.files['crushTextFile'],name= fileid + '.')
+			
+			# Metadata handling
+			metadata = {}
+			if 'crushTextName' in request.form:
+				metadata['name'] = request.form['crushTextName']
+
+			redir = "/"
+			if 'redirDest' in request.form:
+				redir = request.form['redirDest']
+
+			if len(metadata) > 0:
+				with open(filedir['txt_maps'] + fileid + '.metadata.json','w') as mdf:
+					mdf.write(json.dumps(metadata))
+
+			#flash('CRUSH map uploaded with ID ' + fileid, category='success')
+			
+			response = redirect(redir)
+			response.set_cookie('map_id', fileid)
+
+			return response
 
 @app.route('/api/crushmap/<crush_id>', methods=['GET'])
 def api_crushmap_id(crush_id): 

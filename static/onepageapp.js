@@ -19,6 +19,12 @@ $(document).ready(function(){
 	// TODO: This is awful and there's certainly a better way to do it
 	$('html').css('width', $(window).width());
 	$('html').css('height', $(window).height());
+	
+	$('#btn-welcome-new').on('click', function() {
+		$('#welcomeModal .selector').hide();
+		$('#welcomeModal .upload-form').show();
+	});
+
 	$('#welcomeModal').modal();
 
 	
