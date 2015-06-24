@@ -344,7 +344,7 @@ def api_crushmap():
 
 			return response
 
-@app.route('/api/crushmap/<crush_id>', methods=['GET', 'PUT'])
+@app.route('/api/crushmap/<crush_id>', methods=['GET', 'PUT', 'DELETE'])
 def api_crushmap_id(crush_id): 
 	if request.method == "GET":
 		return send_from_directory(filedir['txt_maps'], crush_id + '.txt')
@@ -368,6 +368,14 @@ def api_crushmap_id(crush_id):
 
 		resp = make_response("It worked!")
 		return resp
+	
+	if request.method == "DELETE":
+		filename = filedir['txt_maps'] + crush_id
+		if os.path.isfile(filename):
+			os.remove(filename)
+		if os.path.isfile(filename + ".metadata.json"):
+			os.remove(filename + ".metadata.json")
+		return 'Success, I think?'	
 
 
 @app.route('/crushdata', methods=['GET','POST'])
