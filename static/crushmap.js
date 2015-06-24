@@ -201,6 +201,7 @@ crushsim.crushmap = function() {
 				
 				if (l[0] == 'type') {
 					if (l[1] == 'replicated') obj.type = 1;
+					else if (l[1] == 'erasure') obj.type = 3;
 					// TODO: other types
 				}
 				else if (l[0] == 'step') {
@@ -208,11 +209,12 @@ crushsim.crushmap = function() {
 						obj.steps.push({'op': 'take', 'item_name': l[2]});
 					else if (l[1] == 'emit')
 						obj.steps.push({'op': 'emit'});
-					else // Should be choose or chooseleaf
+					else // Should be choose or chooseleaf, with firstn or indep
 						obj.steps.push({'op': l[1]+'_'+l[2], 'num': parseInt(l[3]), 'type': l[5]});
 						// TODO: There are definitely other cases
 				}
 				else obj[l[0]] = parseInt(l[1]); // Should only be ruleset, max_size and min_size
+				obj.rule_id = rulesList.length;
 			}
 			byRuleset[obj.ruleset] = rulesList.length;
 			byName[obj.rule_name] = rulesList.length;
@@ -231,6 +233,7 @@ crushsim.crushmap = function() {
 
 				output += '\ttype ';
 				if (r.type == 1) output += 'replicated';
+				else if (r.type == 3) output += 'erasure';
 				output += '\n';
 
 				output += '\tmin_size ' + r.min_size + '\n';
@@ -488,7 +491,7 @@ crushsim.crushmap = function() {
 			for (var j = 0; j < b.items.length; j++) {
 				var item = b.items[j];
 
-				if (item.id >= 0) {
+				if (item.id >= 0 && typeof bIndex[item.id] == 'undefined') {
 					pushNode({
 						'name': 'osd.'+item.id,
 						'id': item.id,
