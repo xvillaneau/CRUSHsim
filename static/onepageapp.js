@@ -74,11 +74,13 @@ $(document).ready(function(){
 	});
 
 	$('#btnShowWelcome').on('click', function() {
-			
 		$('#welcomeModal').modal()
 		 .find('.modal-header').hide();
-	})
+	});
 
+	$('#btnShowManager').on('click', function() {
+		$('#managerModal').modal()
+	});
 
 	var color = d3.scale.category20();
 
