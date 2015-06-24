@@ -33,6 +33,11 @@ $(document).ready(function(){
 		$('#divWelcomeNew').slideDown();
 	});
 
+	$('#btnWelcomeNewCancel').on('click', function() {
+		$('#divWelcomeSelect').slideDown();
+		$('#divWelcomeNew').slideUp();
+	});
+
 	$('#btnWelcomeLoad').on('click', function() {
 		$.get('/api/crushmap', function(data){
 			// Get the list of CRUSH maps and their metadata
@@ -60,6 +65,11 @@ $(document).ready(function(){
 				$('#divWelcomeLoad').slideDown();
 			};
 		});
+	});
+
+	$('#btnWelcomeLoadCancel').on('click', function() {
+		$('#divWelcomeSelect').slideDown();
+		$('#divWelcomeLoad').slideUp();
 	});
 
 	$('#btnShowWelcome').on('click', function() {
