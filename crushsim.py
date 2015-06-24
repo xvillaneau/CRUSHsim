@@ -344,10 +344,30 @@ def api_crushmap():
 
 			return response
 
-@app.route('/api/crushmap/<crush_id>', methods=['GET'])
+@app.route('/api/crushmap/<crush_id>', methods=['GET', 'PUT'])
 def api_crushmap_id(crush_id): 
 	if request.method == "GET":
 		return send_from_directory(filedir['txt_maps'], crush_id + '.txt')
+
+	if request.method == "PUT":
+		try:
+			inputdata = request.get_json()
+		except:
+			return "The given request is not valid JSON", 400
+	
+		if os.path.isfile(filedir['txt_maps'] + crush_id + ".metadata.json"):
+			with open(filedir['txt_maps'] + crush_id + ".metadata.json") as mdfr:
+				prevdata = json.loads(mdfr.read())
+		else:
+			prevdata = {}
+
+		if "name" in inputdata:
+			with open(filedir['txt_maps'] + crush_id + ".metadata.json", 'w') as mdfw:
+				prevdata.update(inputdata)
+				mdfw.write(json.dumps(prevdata))
+
+		resp = make_response("It worked!")
+		return resp
 
 
 @app.route('/crushdata', methods=['GET','POST'])

@@ -79,7 +79,66 @@ $(document).ready(function(){
 	});
 
 	$('#btnShowManager').on('click', function() {
-		$('#managerModal').modal()
+		$.get('/api/crushmap', function(data){
+			// Get the list of CRUSH maps and their metadata
+
+			if (data.length == 0) {
+				// If the list is empty, delete the table and write a message
+				$('#managerModal modal-body').empty()
+				 .append("<p>There is currently no saved CRUSH map</p>")
+
+			} else {
+				$('#managerModal tbody').empty();
+				for (var i = 0; i < data.length; i++) {
+					
+					// For each map, append a new row to the table
+					var row = $('<tr>').appendTo('#managerModal tbody');
+					var rowtext = (typeof(data[i].name) != 'undefined' ? data[i].name : data[i].id);
+					var rowdate = new Date(data[i].modtime * 1000);
+
+					// Add the appropriate class, the crush uuid and property the handler
+					$('<td>').appendTo(row)
+						.append('<span>').children().text(rowtext)
+						.after('<div>').next().addClass('form-inline').hide()
+						 .append('<input>').children().addClass('form-control').attr('type','text')
+						 .after('<button>').next().attr('type','submit').addClass('btn btn-primary btn-sm')
+						  .text('Rename').prop('crushUuid', data[i].id)
+						  .on('click', function() {
+						 	var name = $(this).prev().prop('value');
+							var form = $(this).parent();
+							$.ajax(
+								'/api/crushmap/' + this.crushUuid, 
+								{
+									'method': 'PUT',
+									'contentType': 'application/json',
+									'data': JSON.stringify({'name': name}),
+									'success': function(){
+										form.hide().prev().text(name).show();
+									}
+								}
+							);
+
+						 })
+
+					$('<td>').text(rowdate.toLocaleString()).appendTo(row);
+
+					$('<td>').appendTo(row)
+					    .append('<span>').children().addClass("glyphicon glyphicon-tag")
+						 .attr("aria-hidden","true").tooltip({'title':'Rename'})
+						 .on('click', function() {
+							var cell = $(this).parent().parent().children().first()
+								.children('span').toggle()
+								.next().toggle();
+						});
+
+					$('<td>').appendTo(row)
+						.append('<span>').children().addClass("glyphicon glyphicon-remove")
+						 .attr("aria-hidden","true").tooltip({'title':'Delete'});
+				};
+			};
+			$('#managerModal').modal()
+		});
+		
 	});
 
 	var color = d3.scale.category20();
