@@ -24,7 +24,7 @@ $(document).ready(function(){
 	map = crushsim.crushmap();
 
 	$('#btnWelcomeInit').on('click', function() {
-		Cookies.set('map_id', 'init');
+		Cookies.set('map_id', 'init', {'path': '/'});
 		window.location = "/onepageapp";
 	});
 
@@ -48,6 +48,7 @@ $(document).ready(function(){
 				$('#divWelcomeLoad').slideDown();
 
 			} else {
+				$('#divWelcomeLoad tbody').empty();
 				for (var i = 0; i < data.length; i++) {
 					
 					// For each map, append a new row to the table
@@ -75,13 +76,13 @@ $(document).ready(function(){
 	$('#btnShowWelcome').on('click', function() {
 			
 		$('#welcomeModal').modal()
-		 .find('#welcomeModalLabel').hide();
+		 .find('.modal-header').hide();
 	})
 
 
 	var color = d3.scale.category20();
 
-	force = d3.layout.force()
+	var force = d3.layout.force()
 		.charge(-120)
 		.linkDistance(30)
 		.size([appw, apph]);
@@ -89,22 +90,7 @@ $(document).ready(function(){
 	var svg = d3.select("#appGraph").append("svg")
 		.attr('width', appw).attr('height',apph);
 
-
-	$('<style>').appendTo('head').text(
-		 ".node {\n"
-		+"  stroke: #fff;\n"
-		+"  stroke-width: 1.5px;\n"
-		+"}\n"
-		+"\n"
-		+".link {\n"
-		+"  stroke: #999;\n"
-		+"  stroke-opacity: .6;\n"
-		+"}\n"
-	);
-	
 	function initApp(id) {
-		svg.selectAll('*').remove()
-
 		if (typeof id == 'undefined') {
 			map.init();
 			initGraph();

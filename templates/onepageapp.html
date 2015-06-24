@@ -20,7 +20,10 @@
 </head>
 <body style="overflow: hidden;">
 	<div id="appMenu">
-		<button class="btn btn-primary btn-block" id="btnShowWelcome">Choose map</button>
+		<div class="btn-group-vertical btn-block" role="group" aria-label="...">
+			<button class="btn btn-primary" id="btnShowWelcome">Choose map</button>
+			<button class="btn btn-default" id="btnShowManager">Manage maps</button>
+		</div>
 		<h4>Node information</h4>
 		<div class="panel panel-default infoPanel">
 			<div class="panel-body">Fly over a node to show its data</div>
