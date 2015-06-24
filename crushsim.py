@@ -371,8 +371,8 @@ def api_crushmap_id(crush_id):
 	
 	if request.method == "DELETE":
 		filename = filedir['txt_maps'] + crush_id
-		if os.path.isfile(filename):
-			os.remove(filename)
+		if os.path.isfile(filename + ".txt"):
+			os.remove(filename + ".txt")
 		if os.path.isfile(filename + ".metadata.json"):
 			os.remove(filename + ".metadata.json")
 		return 'Success, I think?'	

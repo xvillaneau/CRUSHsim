@@ -12,6 +12,10 @@
 	margin: 0;
 }
 
+#managerModal tr button {
+	margin-left: 1em;
+}
+
 .node {
 	stroke: #fff;
 	stroke-width: 1.5px;
