@@ -456,6 +456,52 @@ crushsim.crushmap = function() {
 		};
 	};
 	
+	map.graphData = function() {
+		var out = {'nodes': [], 'links': []},
+			bList = buckets.json(),
+			bIndex = {};
+		
+		function pushNode(obj) {
+			bIndex[obj.id] = out.nodes.length;
+			out.nodes.push(obj);
+		};
+
+		function addLink(sourceId, targetId) {
+			var source, target;
+			source = bIndex[sourceId];
+			target = bIndex[targetId];
+			if (typeof source == 'undefined' || typeof target == 'undefined') return false;
+			out.links.push({'source': source, 'target': target, 'value': 0});
+			return true;
+		};
+
+		for (var i = 0; i < bList.length; i++) {
+			var b = bList[i];
+
+			pushNode({
+				'name': b.name,
+				'id': b.id,
+				'type_id': b.type_id,
+				'type': b.type_name
+			});
+			
+			for (var j = 0; j < b.items.length; j++) {
+				var item = b.items[j];
+
+				if (item.id >= 0) {
+					pushNode({
+						'name': 'osd.'+item.id,
+						'id': item.id,
+						'type_id': 0, // Assuming type 0 is OSD, might not be the case ?
+						'type': 'osd' // Same remark, making assumptions here
+					});
+				}
+				addLink(b.id, item.id);
+			};
+		}; 
+		return out;
+	};
+	
 	map.init = function() {
 		buckets.init();
 		devices.init();

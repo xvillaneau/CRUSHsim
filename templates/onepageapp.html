@@ -15,10 +15,18 @@
 	<meta charset="utf-8">
 	<title>{% block title %}CRUSHsim{% endblock %}</title>
 	<link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='onepageapp.css') }}" rel="stylesheet">
 	{% block header %}{% endblock %}
 </head>
 <body style="overflow: hidden;">
-	<div id="graph-map"></div>
+	<div id="appMenu">
+		<button class="btn btn-primary btn-block" id="btnShowWelcome">Choose map</button>
+		<h4>Node information</h4>
+		<div class="panel panel-default infoPanel">
+			<div class="panel-body">Fly over a node to show its data</div>
+		</div>
+	</div> 
+	<div id="appGraph"></div>
 
 	<!-- Modal -->
 	<div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="welcomeModalLabel">
@@ -30,20 +38,20 @@
 					<p>Please choose how you wish to proceed.</p>
 				</div>
 				<div class="modal-body">
-					<div class="container-fluid selector">
+					<div class="container-fluid" id="divWelcomeSelect">
 						<div class="row">
 							<div class="col-md-4">
-								<button type="button" class="btn btn-default btn-block btn-success" data-dismiss="modal">Start from<br>scratch</button>
+								<button class="btn btn-block btn-success" id="btnWelcomeInit">Start from<br>scratch</button>
 							</div>
 							<div class="col-md-4">
-								<button type="button" class="btn btn-default btn-block btn-info" id="btn-welcome-new">Upload a new<br>CRUSH map</button>
+								<button class="btn btn-block btn-info" id="btnWelcomeNew">Upload a new<br>CRUSH map</button>
 							</div>
 							<div class="col-md-4">
-								<button type="button" class="btn btn-default btn-block btn-primary" id="btn-welcome-load">Load a previously<br>saved map</button>
+								<button class="btn btn-block btn-primary" id="btnWelcomeLoad">Load a previously<br>saved map</button>
 							</div>
 						</div>
 					</div>
-					<div class="upload-form" style="display: none;">
+					<div id="divWelcomeNew" style="display: none;">
 						<h2>Upload a CRUSH map</h2>
 						<form action="/api/crushmap" method=POST enctype="multipart/form-data">
 							<div class="form-group">
@@ -55,6 +63,20 @@
 							</div>
 							<button type="submit" class="btn btn-default">Upload</button>
 						</form>
+					</div>
+					<div id="divWelcomeLoad" style="display: none;">
+						<h2>Choose a CRUSH map</h2>
+						<table class="table table-striped table-hover">
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>Last modified</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
