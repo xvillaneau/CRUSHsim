@@ -223,7 +223,13 @@ $(document).ready(function(){
 			  .attr("r", 8)
 			  .style("fill", function(d) { return color(d.type_id); })
 			  .call(force.drag)
-			  .on('mouseover', updateInfoPanel);
+			  .on('mouseover', function(d){
+			  	$(this).css("stroke", 'black');
+			  	updateInfoPanel(d);
+			  })
+			  .on('mouseout', function(d){
+			  	$(this).css("stroke", 'white');
+			  })
 
 		  node.append("title")
 			  .text(function(d) { return d.name; });
