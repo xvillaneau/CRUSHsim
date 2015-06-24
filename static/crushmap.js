@@ -502,6 +502,7 @@ crushsim.crushmap = function() {
 				addLink(b.id, item.id);
 			};
 		}; 
+		out.types = types.json();
 		return out;
 	};
 	

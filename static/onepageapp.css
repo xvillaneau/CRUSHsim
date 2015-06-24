@@ -16,6 +16,11 @@
 	margin-left: 1em;
 }
 
+.legendPanel table span {
+	font-size: 2em;
+	line-height: 0;
+}
+
 .node {
 	stroke: #fff;
 	stroke-width: 1.5px;

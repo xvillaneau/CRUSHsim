@@ -220,6 +220,7 @@ $(document).ready(function(){
 			  .data(data.nodes)
 			.enter().append("circle")
 			  .attr("class", "node")
+			  .attr("type", function(d) {return d.type_name})
 			  .attr("r", 8)
 			  .style("fill", function(d) { return color(d.type_id); })
 			  .call(force.drag)
@@ -237,6 +238,15 @@ $(document).ready(function(){
 			node.attr("cx", function(d) { return d.x; })
 				.attr("cy", function(d) { return d.y; });
 		});
+
+		d3.select('.legendPanel tbody')
+			.selectAll('tr').data(data.types)
+			.enter().append('tr')
+			.html(function(d) {
+				return '<td><span style="color: '+color(d.id_type)+'">&#9679;</span></td>'
+					+ '<td>' + d.id_type + '</td>'
+					+ '<td>' + d.name + '</td>';
+			});
 	};
 
 	function updateInfoPanel(d) {
