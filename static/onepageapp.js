@@ -177,7 +177,7 @@ $(document).ready(function(){
 
 	var color = d3.scale.category20();
 
-	var force = d3.layout.force()
+	force = d3.layout.force()
 		.charge(-120)
 		.linkDistance(30)
 		.size([appw, apph]);
@@ -219,8 +219,7 @@ $(document).ready(function(){
 		  var node = svg.selectAll(".node")
 			  .data(data.nodes)
 			.enter().append("circle")
-			  .attr("class", "node")
-			  .attr("type", function(d) {return d.type_name})
+			  .attr("class", function(d) {return "node type-" + d.type})
 			  .attr("r", 8)
 			  .style("fill", function(d) { return color(d.type_id); })
 			  .call(force.drag)
@@ -246,6 +245,13 @@ $(document).ready(function(){
 				return '<td><span style="color: '+color(d.id_type)+'">&#9679;</span></td>'
 					+ '<td>' + d.id_type + '</td>'
 					+ '<td>' + d.name + '</td>';
+			})
+			.on('mouseover', function(d) {
+				svg.selectAll('.node').style('stroke', 'white');
+				svg.selectAll('.type-' + d.name).style('stroke', 'black');
+			})
+			.on('mouseout', function(d) {
+				svg.selectAll('.node').style('stroke', 'white');
 			});
 	};
 
