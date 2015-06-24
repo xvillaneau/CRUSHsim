@@ -123,7 +123,7 @@ crushsim.crushmap = function() {
 			bList = [{
 				'id': -1,
 				'name': 'default',
-				'type': 'root',
+				'type_name': 'root',
 				'type_id': 10,
 				'alg': 'straw',
 				'hash': 'rjenkins1',
