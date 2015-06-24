@@ -175,6 +175,29 @@ $(document).ready(function(){
 		
 	});
 
+	$('#optOsdCircle').on('change', function() {
+		if (this.checked) {
+			var osdList = map.jsonMap().devices,
+				radius = apph / 2 * 0.8,
+				baseAngle = 2 * Math.PI / osdList.length,
+				angles = {};
+
+			for (var i = 0; i < osdList.length; i++) angles[osdList[i].id] = i * baseAngle;
+
+			svg.selectAll(".type-osd")
+				.each(function(d) {
+					d.px = radius * Math.sin(angles[d.id]) + appw / 2;
+					d.py = -radius * Math.cos(angles[d.id]) + apph / 2;
+					d.fixed = true;
+				})
+			force.resume()
+		} else {
+			svg.selectAll(".type-osd")
+				.each(function(d) {d.fixed = false;})
+			force.resume()
+		};
+	});
+
 	var color = d3.scale.category20();
 
 	force = d3.layout.force()
