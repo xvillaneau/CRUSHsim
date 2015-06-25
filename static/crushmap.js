@@ -539,22 +539,21 @@ crushsim.crushmap = function() {
 		if (arguments.length == 3) {callback = pgs; pgs = null;}
 		if (typeof callback != 'function') return false;
 
-		if (typeof size != 'number') return false;
-		if (size != Math.floor(size)) return false;
+		if (isNaN(parseInt(size))) return false;
 
 		if (typeof rule == 'string') {
 			var r = rules.getByName(rule);
 			if (typeof r == 'undefined') return false;
 			rule = r.ruleset;
 		}
-		else if (typeof rule != 'number') return false;
+		else if (isNaN(parseInt(rule))) return false;
 		else if (typeof rules.getByRuleset(rule) == 'undefined') return false;
 
 		var url = '/api/simulate'
 			+ '?rule=' + rule
 			+ '&size=' + size;
 
-		if (pgs != null && typeof pgs == 'number' && pgs == Math.floor(pgs))
+		if (pgs != null && !isNaN(parseInt(pgs)))
 			url += '&pgs=' + pgs;
 
 		for (var osd in reweights)
