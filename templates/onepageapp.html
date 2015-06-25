@@ -48,9 +48,30 @@
 	</div> 
 	<div id="appMenuR">
 		<h4>Compute distribution</h4>
-		<div class="panel panel-default staticPanel">
+		<div class="panel panel-default compStatPanel">
 			<div class="panel-body">
-				<button class="btn btn-primary btn-block" id="btnSimulStatic">Compute distribution</button>
+				<div class="row">
+					<div class="col-xs-6 form-group">
+						<label for="compStatRule">CRUSH Rule</label>
+						<select class="form-control" id="compStatRule">
+						</select>
+					</div>
+					<div class="col-xs-6 form-group">
+						<label for="compStatPgs">PGs</label>
+						<input type="text" class="form-control" id="compStatPGs">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6 form-group">
+						<label for="compStatSize">Size</label>
+						<input type="text" class="form-control" id="compStatSize">
+					</div>
+					<div class="col-xs-6 form-group">
+						<label for="compStatMinSize">Min. Size</label>
+						<input type="text" class="form-control" id="compStatMinSize">
+					</div>
+				</div>
+				<button class="btn btn-primary btn-block" id="btnCompStat">Compute distribution</button>
 			</div>
 		</div>
 	</div>
