@@ -309,7 +309,7 @@ $(document).ready(function(){
 	};
 
 	function updateInfoPanel(d) {
-		$('#appMenu .infoPanel .panel-body').empty()
+		$('#appMenuL .infoPanel .panel-body').empty()
 			.append('<ul>').children()
 			.append('<li>').children().html('<b>Name:</b> '+d.name)
 			.after('<li>').next().html('<b>ID:</b> '+d.id)

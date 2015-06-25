@@ -19,7 +19,7 @@
 	{% block header %}{% endblock %}
 </head>
 <body style="overflow: hidden;">
-	<div id="appMenu">
+	<div id="appMenuL">
 		<div class="btn-group-vertical btn-block" role="group" aria-label="...">
 			<button class="btn btn-primary" id="btnShowWelcome">Choose map</button>
 			<button class="btn btn-default" id="btnShowManager">Manage maps</button>
@@ -46,6 +46,14 @@
 			</div>
 		</div>
 	</div> 
+	<div id="appMenuR">
+		<h4>Compute distribution</h4>
+		<div class="panel panel-default staticPanel">
+			<div class="panel-body">
+				<button class="btn btn-primary btn-block" id="btnSimulStatic">Compute distribution</button>
+			</div>
+		</div>
+	</div>
 	<div id="appGraph"></div>
 
 	<!-- Modal -->

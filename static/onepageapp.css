@@ -1,5 +1,5 @@
 
-#appMenu {
+#appMenuL, #appMenuR {
 	height: 100%;
 	width: 300px;
 	position: absolute;
@@ -7,7 +7,11 @@
 	overflow: auto;
 }
 
-#appMenu .infoPanel ul {
+#appMenuR {
+	right: 0;
+}
+
+#appMenuL .infoPanel ul {
 	list-style: none;
 	padding: 0;
 	margin: 0;
