@@ -2,7 +2,7 @@
 // ====================================================================
 // CRUSHSim - CRUSH Simulation web app for Ceph admins
 // ---------------------------------------------------
-// 
+//
 // By Xavier Villaneau, 2015
 // xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
 // Claranet SAS, Rennes, France
@@ -18,7 +18,7 @@ function updateCompStatRule() {
 	$('#compStatMinSize').attr("placeholder",rule.min_size)
 
 	var size = document.getElementById('compStatSize').value;
-	if (isNaN(parseInt(size))) 
+	if (isNaN(parseInt(size)))
 		$('#compStatPgs').attr("placeholder",map.suggestPgs(ruleset));
 	else
 		$('#compStatPgs').attr("placeholder",map.suggestPgs(ruleset, size));
@@ -69,13 +69,44 @@ function compStatLaunchTests() {
 
 function compStatLaunch() {
 	var params = compStatLaunchTests();
-	
+
 	if (params) {
 		map.simulate(params.rule.ruleset, params.size, params.pgs, function(res) {
-			console.log(res);
+			var sizes = {},
+			    byOsd = {},
+					lines = res.split('\n');
+
+			for (var i = 0; i < lines.length; i++) {
+				if (lines[i].startsWith('CRUSH')) {
+					var Osds = lines[i].split(" ")[5].slice(1).slice(0,-1).split(',');
+					var size = Osds.length;
+
+					if (isNaN(sizes[size])) sizes[size] = 1;
+					else sizes[size] += 1;
+
+					for (var j = 0; j < Osds.length; j++) {
+						if (isNaN(byOsd[Osds[j]])) byOsd[Osds[j]] = 1;
+						else byOsd[Osds[j]] += 1
+					}
+				};
+			};
+
+			var qScale = d3.scale.quantile()
+			   .domain([0, params.pgs * params.size / map.buckets.json().length])
+			   .range(colorbrewer.RdBu[11]);
+
+			d3.select('svg').selectAll('.node.type-osd')
+				.style('fill', function(d) {
+					if (isNaN(byOsd[d.id]))
+						return qScale(0);
+					else
+						return qScale(byOsd[d.id]);
+				});
+
+			console.log(sizes);
+			console.log(byOsd);
 		});
-	}
-	else console.log('oh no…');
+	};
 };
 
 function initRightMenu() {
