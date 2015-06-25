@@ -514,6 +514,26 @@ crushsim.crushmap = function() {
 		types.init();
 	}
 	
+	map.buckets = (function(){
+		return buckets;
+	})()
+	
+	map.devices = (function(){
+		return devices;
+	})()
+	
+	map.rules = (function(){
+		return rules;
+	})()
+
+	map.tunables = (function(){
+		return tunables;
+	})()
+	
+	map.types = (function(){
+		return types;
+	})()
+	
 	map.simulate = function(rule, size, pgs, callback) {
 		if (arguments.length < 3 || arguments.length > 4) return false;
 
