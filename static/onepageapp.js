@@ -142,6 +142,15 @@ $(document).ready(function(){
 					$('<td>').text(rowdate.toLocaleString()).appendTo(row);
 
 					$('<td>').appendTo(row)
+					    .append('<span>').children().addClass("glyphicon glyphicon-play")
+						 .attr("aria-hidden","true").tooltip({'title':'Open'})
+						 .prop('crushUuid', data[i].id)
+						 .on('click', function() {
+							Cookies.set('map_id', this.crushUuid, {'path': '/'});
+							window.location = "/onepageapp";
+						});
+
+					$('<td>').appendTo(row)
 					    .append('<span>').children().addClass("glyphicon glyphicon-tag")
 						 .attr("aria-hidden","true").tooltip({'title':'Rename'})
 						 .on('click', function() {

@@ -4,6 +4,7 @@
 	width: 300px;
 	position: absolute;
 	padding: 15px;
+	overflow: auto;
 }
 
 #appMenu .infoPanel ul {
