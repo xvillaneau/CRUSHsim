@@ -2,7 +2,7 @@
 // ====================================================================
 // CRUSHSim - CRUSH Simulation web app for Ceph admins
 // ---------------------------------------------------
-// 
+//
 // By Xavier Villaneau, 2015
 // xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
 // Claranet SAS, Rennes, France
@@ -16,7 +16,7 @@ crushsim.crushmap = function() {
 	// JavaScript "Class" for managing a CRUSH map.
 	// Stores every information in subclasses, then allows
 	// import and export in CRUSH text format, transparently
-	
+
 	var map = {},
 		reweights = {},
 		buckets,
@@ -75,11 +75,11 @@ crushsim.crushmap = function() {
 				else if (l[0] == '}') continue; // Shouldn't happen, but just in case
 				else obj[l[0]] = l[1];
 			}
-			
+
 			byId[obj.id] = bList.length;
 			byName[obj.name] = bList.length;
 			bList.push(obj);
-			
+
 			return true;
 		};
 
@@ -146,7 +146,7 @@ crushsim.crushmap = function() {
 		// the name of a device, since it's always 'osd.<id>'.
 		// Maybe this is a mistake... If it does cause you trouble,
 		// please send me some feedback.
-		
+
 		var devsObj = {},
 			devs = [];
 
@@ -180,7 +180,7 @@ crushsim.crushmap = function() {
 		return devsObj;
 	};
 	devices = devsConstructor();
-	
+
 
 	function rulesConstructor() {
 		var rulesObj = {},
@@ -198,7 +198,7 @@ crushsim.crushmap = function() {
 					obj.rule_name = l[1];
 					continue;
 				}
-				
+
 				if (l[0] == 'type') {
 					if (l[1] == 'replicated') obj.type = 1;
 					else if (l[1] == 'erasure') obj.type = 3;
@@ -209,6 +209,8 @@ crushsim.crushmap = function() {
 						obj.steps.push({'op': 'take', 'item_name': l[2]});
 					else if (l[1] == 'emit')
 						obj.steps.push({'op': 'emit'});
+					else if (l[1] == 'set_chooseleaf_tries')
+						obj.steps.push({'op': 'set_chooseleaf_tries', 'num': parseInt(l[2])});
 					else // Should be choose or chooseleaf, with firstn or indep
 						obj.steps.push({'op': l[1]+'_'+l[2], 'num': parseInt(l[3]), 'type': l[5]});
 						// TODO: There are definitely other cases
@@ -223,7 +225,7 @@ crushsim.crushmap = function() {
 
 		rulesObj.dump = function() {
 			var output = '';
-			
+
 			for (var i = 0; i < rulesList.length; i++) {
 				var r = rulesList[i];
 
@@ -245,6 +247,7 @@ crushsim.crushmap = function() {
 					output += '\tstep ';
 					if (s.op == 'emit') output += 'emit';
 					else if (s.op == 'take') output += 'take ' + s.item_name;
+					else if (s.op == 'set_chooseleaf_tries') output += s.op + ' ' + s.num;
 					else {
 						output += s.op.split('_')[0] + ' ' + s.op.split('_')[1] + ' ';
 						output += s.num + ' type ' + s.type;
@@ -354,7 +357,7 @@ crushsim.crushmap = function() {
 
 		typesObj.dump = function() {
 			var output = '';
-			for (var k in byId) 
+			for (var k in byId)
 				output += 'type ' + k + ' ' + byId[k] + '\n';
 			return output;
 		};
@@ -422,7 +425,7 @@ crushsim.crushmap = function() {
 			}
 
 			else if (inBlock) {block.push(line); continue;}
-			
+
 			else if (line.startsWith('device ')) devices.parse(line);
 			else if (line.startsWith('tunable ')) tunables.parse(line);
 			else if (line.startsWith('type ')) types.parse(line);
@@ -457,12 +460,12 @@ crushsim.crushmap = function() {
 			'types': types.json()
 		};
 	};
-	
+
 	map.graphData = function() {
 		var out = {'nodes': [], 'links': []},
 			bList = buckets.json(),
 			bIndex = {};
-		
+
 		function pushNode(obj) {
 			bIndex[obj.id] = out.nodes.length;
 			out.nodes.push(obj);
@@ -486,7 +489,7 @@ crushsim.crushmap = function() {
 				'type_id': b.type_id,
 				'type': b.type_name
 			});
-			
+
 			for (var j = 0; j < b.items.length; j++) {
 				var item = b.items[j];
 
@@ -500,11 +503,11 @@ crushsim.crushmap = function() {
 				}
 				addLink(b.id, item.id);
 			};
-		}; 
+		};
 		out.types = types.json();
 		return out;
 	};
-	
+
 	map.init = function() {
 		buckets.init();
 		devices.init();
@@ -512,15 +515,15 @@ crushsim.crushmap = function() {
 		tunables.init();
 		types.init();
 	}
-	
+
 	map.buckets = (function(){
 		return buckets;
 	})()
-	
+
 	map.devices = (function(){
 		return devices;
 	})()
-	
+
 	map.rules = (function(){
 		return rules;
 	})()
@@ -528,11 +531,11 @@ crushsim.crushmap = function() {
 	map.tunables = (function(){
 		return tunables;
 	})()
-	
+
 	map.types = (function(){
 		return types;
 	})()
-	
+
 	map.simulate = function(rule, size, pgs, callback) {
 		if (arguments.length < 3 || arguments.length > 4) return false;
 
