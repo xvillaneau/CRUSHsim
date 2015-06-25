@@ -184,20 +184,33 @@ $(document).ready(function(){
 		
 	});
 
+	function updateCompStatRule() {
+		var ruleset = document.getElementById('compStatRule').value,
+			rule = map.rules.getByRuleset(ruleset);
+
+		$('#compStatSize').attr("placeholder",rule.max_size)
+		$('#compStatMinSize').attr("placeholder",rule.min_size)
+
+		var size = document.getElementById('compStatSize').value;
+		if (isNaN(parseInt(size))) 
+			$('#compStatPgs').attr("placeholder",map.suggestPgs(ruleset));
+		else
+			$('#compStatPgs').attr("placeholder",map.suggestPgs(ruleset, size));
+	};
+	document.getElementById('compStatRule').onchange = updateCompStatRule;
+
+
+	document.getElementById('compStatSize').onchange = function() {
+		var ruleset = document.getElementById('compStatRule').value;
+		$('#compStatPgs').attr("placeholder",map.suggestPgs(ruleset, this.value))
+	}
+
 	$('#optOsdCircle').on('change', function() {
 		if (this.checked) {
 			var osdList = map.jsonMap().devices,
 				radius = apph / 2 * 0.9,
 				baseAngle = 2 * Math.PI / osdList.length,
 				angles = {};
-
-			/*$('svg').append('<circle class="osd-circle">').children('.osd-circle')
-				.attr('r', radius)
-				.attr('cx', appw / 2)
-				.attr('cy', apph / 2)
-				.css('stroke', 'lightgrey')
-				.css('stroke-width', '1px')
-				.css('fill', 'transparent')*/
 
 			svg.insert('circle', ":first-child")
 				.attr('class', 'circle-osd')
@@ -292,10 +305,11 @@ $(document).ready(function(){
 		});
 
 		d3.select('#compStatRule')
-			.selectAll('option').data(map.jsonMap().rules)
+			.selectAll('option').data(map.rules.json())
 			.enter().append('option')
 			.attr('value', function(d){return d.ruleset})
-			.text(function(d){return d.ruleset + ' - ' + d.rule_name})
+			.attr('selected', function(d,i){if (i==0) return 'selected'; else return null;})
+			.text(function(d){return d.ruleset + ' - ' + d.rule_name});
 
 		d3.select('.legendPanel tbody')
 			.selectAll('tr').data(data.types)
@@ -312,6 +326,8 @@ $(document).ready(function(){
 			.on('mouseout', function(d) {
 				svg.selectAll('.node').style('stroke', 'white');
 			});
+
+		updateCompStatRule()
 	};
 
 	function updateInfoPanel(d) {

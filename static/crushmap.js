@@ -295,7 +295,6 @@ crushsim.crushmap = function() {
 	};
 	rules = rulesConstructor();
 
-
 	function tunsConstructor() {
 		var tunsObj = {},
 			tuns = {};
@@ -569,6 +568,15 @@ crushsim.crushmap = function() {
 			'success': callback
 		});
 	};
+
+	map.suggestPgs = function(ruleset, size) {
+		if (!arguments.length || arguments.lenght > 2) return false;
+		if (arguments.length == 1) size = rules.getByRuleset(ruleset).max_size;
+
+		var out = 1;
+		while (out < (devices.json().length * 100 / size)) out = out * 2;
+		return out;
+	}
 
 	map.osdReweight = function(osd, weight) {
 		// Will temporarily reweight an OSD as in "ceph osd reweight"
