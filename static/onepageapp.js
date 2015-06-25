@@ -187,9 +187,23 @@ $(document).ready(function(){
 	$('#optOsdCircle').on('change', function() {
 		if (this.checked) {
 			var osdList = map.jsonMap().devices,
-				radius = apph / 2 * 0.8,
+				radius = apph / 2 * 0.9,
 				baseAngle = 2 * Math.PI / osdList.length,
 				angles = {};
+
+			/*$('svg').append('<circle class="osd-circle">').children('.osd-circle')
+				.attr('r', radius)
+				.attr('cx', appw / 2)
+				.attr('cy', apph / 2)
+				.css('stroke', 'lightgrey')
+				.css('stroke-width', '1px')
+				.css('fill', 'transparent')*/
+
+			svg.insert('circle', ":first-child")
+				.attr('class', 'circle-osd')
+				.attr('r', radius)
+				.attr('cx', appw / 2)
+				.attr('cy', apph / 2)
 
 			for (var i = 0; i < osdList.length; i++) angles[osdList[i].id] = i * baseAngle;
 
@@ -201,6 +215,7 @@ $(document).ready(function(){
 				})
 			force.resume()
 		} else {
+			svg.select('.circle-osd').remove()
 			svg.selectAll(".type-osd")
 				.each(function(d) {d.fixed = false;})
 			force.resume()
