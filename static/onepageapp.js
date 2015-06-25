@@ -291,6 +291,12 @@ $(document).ready(function(){
 				.attr("cy", function(d) { return d.y; });
 		});
 
+		d3.select('#compStatRule')
+			.selectAll('option').data(map.jsonMap().rules)
+			.enter().append('option')
+			.attr('value', function(d){return d.ruleset})
+			.text(function(d){return d.ruleset + ' - ' + d.rule_name})
+
 		d3.select('.legendPanel tbody')
 			.selectAll('tr').data(data.types)
 			.enter().append('tr')
