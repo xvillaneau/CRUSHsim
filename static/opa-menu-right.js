@@ -93,6 +93,25 @@ function compStatLaunch() {
 				};
 			};
 
+			var d3sizes = [];
+			for (var s in sizes)
+				d3sizes.push({'num': s, 'pgs': sizes[s]});
+
+			d3.select('#appMenuR .compStatResPanel tbody').html('')
+				.selectAll('tr').data(d3sizes)
+				.enter().append('tr')
+				.attr('class', function(d){
+					if (d.num == params.size) return 'success';
+					else if (d.num >= params.min_size) return 'warning';
+					else return 'danger';
+				})
+				.html( function(d, i) {
+					return '<td>n = ' + d.num + '</td>'
+						+ '<td>' + d.pgs + '/' + params.pgs + '</td>'
+				});
+
+			$('.compStatResPanel').slideDown();
+
 			var qScale = d3.scale.quantile()
 			   .domain([0, params.pgs * params.size / map.buckets.json().length])
 			   .range(colorbrewer.RdBu[11]);

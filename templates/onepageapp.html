@@ -72,6 +72,9 @@
 					</div>
 				</div>
 				<button class="btn btn-primary btn-block" id="btnCompStat">Compute distribution</button>
+        <div class="panel panel-default compStatResPanel" style="display: none;">
+          <table class="table table-striped table-hover table-condensed"><tbody></tbody></table>
+        </div>
 			</div>
 		</div>
 	</div>
@@ -163,7 +166,7 @@
 	<script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='lib/d3.v3.min.js') }}"></script>
   <script src="{{ url_for('static', filename='lib/js.cookie.js') }}"></script>
-	<script src="{{ url_for('static', filename='lib/colorbrewer.js') }}"></script>	
+	<script src="{{ url_for('static', filename='lib/colorbrewer.js') }}"></script>
 	<script src="{{ url_for('static', filename='crushmap.js') }}"></script>
 	<script src="{{ url_for('static', filename='opa-modal-welcome.js') }}"></script>
 	<script src="{{ url_for('static', filename='opa-modal-manager.js') }}"></script>
