@@ -117,9 +117,9 @@ function compStatLaunch() {
 				.selectAll('tr').data(d3sizes)
 				.enter().append('tr')
 				.attr('class', function(d){
-					if (d.num == params.size) return 'success';
-					else if (d.num >= params.min_size) return 'warning';
-					else return 'danger';
+					if (d.num == params.size) return 'success text-success';
+					else if (d.num >= params.min_size) return 'warning text-warning';
+					else return 'danger text-danger';
 				})
 				.html( function(d, i) {
 					return '<td>n = ' + d.num + '</td>'
