@@ -536,7 +536,7 @@ crushsim.crushmap = function() {
 		return types;
 	})()
 
-	map.simulate = function(rule, size, pgs, callback) {
+	map.simulate = function(ruleset, size, pgs, callback) {
 		if (arguments.length < 3 || arguments.length > 4) return false;
 
 		if (arguments.length == 3) {callback = pgs; pgs = null;}
@@ -544,16 +544,12 @@ crushsim.crushmap = function() {
 
 		if (isNaN(parseInt(size))) return false;
 
-		if (typeof rule == 'string') {
-			var r = rules.getByName(rule);
-			if (typeof r == 'undefined') return false;
-			rule = r.ruleset;
-		}
-		else if (isNaN(parseInt(rule))) return false;
-		else if (typeof rules.getByRuleset(rule) == 'undefined') return false;
+		if (isNaN(parseInt(ruleset))) return false;
+		var rule = rules.getByRuleset(ruleset)
+		if (typeof rule == 'undefined') return false;
 
 		var url = '/api/simulate'
-			+ '?rule=' + rule
+			+ '?rule=' + rule.rule_id
 			+ '&size=' + size;
 
 		if (pgs != null && !isNaN(parseInt(pgs)))
