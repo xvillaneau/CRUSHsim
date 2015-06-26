@@ -71,6 +71,7 @@ function compStatLaunch() {
 	var params = compStatLaunchTests();
 
 	if (params) {
+		$('.compStatResPanel').slideUp();
 		map.simulate(params.rule.ruleset, params.size, params.pgs, function(res) {
 			var sizes = {},
 			    byOsd = {},
@@ -81,13 +82,14 @@ function compStatLaunch() {
 					var Osds = lines[i].split(" ")[5].slice(1).slice(0,-1).split(',');
 					var size = Osds.length;
 
+					for (var j = 0; j < Osds.length; j++) {
+						if (Osds[j] == '2147483647') size -= 1;
+						else if (isNaN(byOsd[Osds[j]])) byOsd[Osds[j]] = 1;
+						else byOsd[Osds[j]] += 1;
+					}
+
 					if (isNaN(sizes[size])) sizes[size] = 1;
 					else sizes[size] += 1;
-
-					for (var j = 0; j < Osds.length; j++) {
-						if (isNaN(byOsd[Osds[j]])) byOsd[Osds[j]] = 1;
-						else byOsd[Osds[j]] += 1
-					}
 				};
 			};
 
