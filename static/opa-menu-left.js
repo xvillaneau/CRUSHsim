@@ -2,7 +2,7 @@
 // ====================================================================
 // CRUSHSim - CRUSH Simulation web app for Ceph admins
 // ---------------------------------------------------
-// 
+//
 // By Xavier Villaneau, 2015
 // xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
 // Claranet SAS, Rennes, France
@@ -51,20 +51,44 @@ function updateNodeCircle(graph, force, type) {
 
 		for (var i = 0; i < osdList.length; i++) angles[osdList[i].id] = i * baseAngle;
 
+		var circledrag = d3.behavior.drag()
+			.origin(function(d) {return d;})
+			.on('drag', function(d){
+				//this.x = radius * Math.sin(math.arg(math.complex(d3.event.x, d3.event.y)));
+				//this.px = radius * Math.sin(math.arg(math.complex(d3.event.x, d3.event.y)));
+				var x,y,
+				    a = math.arg(math.complex(apph/2 - d3.event.y, d3.event.x - appw/2));
+
+				a = baseAngle * math.floor(a / baseAngle + 0.5);
+				x = appw/2 + radius * Math.sin(a)
+				y = apph/2 - radius * Math.cos(a)
+				d3.select(this)
+					.attr('cx', x)
+					.attr('cy', y)
+					.each(function(d) {
+						d.px = x;
+						d.py = y;
+					});
+				force.resume();
+			})
+
 		graph.selectAll(".type-osd")
 			.each(function(d) {
 				d.px = radius * Math.sin(angles[d.id]) + appw / 2;
 				d.py = -radius * Math.cos(angles[d.id]) + apph / 2;
 				d.fixed = true;
 			})
+			.call(circledrag)
+
 		force.resume()
 	} else {
 		graph.select('.circle-osd').remove()
 		graph.selectAll(".type-osd")
 			.each(function(d) {d.fixed = false;})
+			.call(force.drag)
 		force.resume()
 	};
-	
+
 };
 
 function initLeftMenu(graph, color, force) {

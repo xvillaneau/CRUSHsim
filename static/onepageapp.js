@@ -2,7 +2,7 @@
 // ====================================================================
 // CRUSHSim - CRUSH Simulation web app for Ceph admins
 // ---------------------------------------------------
-// 
+//
 // By Xavier Villaneau, 2015
 // xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
 // Claranet SAS, Rennes, France
@@ -19,7 +19,7 @@ $(document).ready(function(){
 	// TODO: This is awful and there's certainly a better way to do it
 	$('body').css('width', $(window).width());
 	$('body').css('height', $(window).height());
-	
+
 	var init_id = Cookies.get('map_id');
 	map = crushsim.crushmap();
 
@@ -49,7 +49,7 @@ $(document).ready(function(){
 		};
 	};
 	initApp(init_id);
-	
+
 	function initGraph() {
 		var data = map.graphData();
 
