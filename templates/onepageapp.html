@@ -52,31 +52,31 @@
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-xs-6 form-group">
-						<label for="compStatRule">CRUSH Rule</label>
+						<label class="control-label" for="compStatRule">CRUSH Rule</label>
 						<select class="form-control" id="compStatRule">
 						</select>
 					</div>
 					<div class="col-xs-6 form-group">
-						<label for="compStatPgs">PGs</label>
+						<label class="control-label" for="compStatPgs">PGs</label>
 						<input type="text" class="form-control" id="compStatPgs">
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-6 form-group">
-						<label for="compStatSize">Size</label>
+						<label class="control-label" for="compStatSize">Size</label>
 						<input type="text" class="form-control" id="compStatSize">
 					</div>
 					<div class="col-xs-6 form-group">
-						<label for="compStatMinSize">Min. Size</label>
+						<label class="control-label" for="compStatMinSize">Min. Size</label>
 						<input type="text" class="form-control" id="compStatMinSize">
 					</div>
 				</div>
 				<button class="btn btn-primary btn-block" id="btnCompStat">Compute distribution</button>
-        <div class="panel panel-default compStatResPanel" style="display: none;">
-          <table class="table table-striped table-hover table-condensed"><tbody></tbody></table>
-        </div>
 			</div>
 		</div>
+    <div class="panel panel-default compStatResPanel" style="display: none;">
+      <table class="table table-striped table-hover table-condensed"><tbody></tbody></table>
+    </div>
 	</div>
 	<div id="appGraph"></div>
 

@@ -33,9 +33,11 @@ function compStatLaunchTests() {
 	var rule, size, min_size, pgs,
 		success = true;
 
+	$('.compStatPanel .form-group').removeClass('has-error');
+
 	rule = map.rules.getByRuleset(document.getElementById('compStatRule').value);
 	if (typeof rule == 'undefined') {
-		$('#compStatRule').addClass('has-error');
+		$('#compStatRule').parent().addClass('has-error');
 		success = false;
 	}
 
@@ -43,7 +45,7 @@ function compStatLaunchTests() {
 	if (typeof size == 'undefined' || isNaN(parseInt(size)))
 		size = $('#compStatSize').attr('placeholder');
 	if (typeof size == 'undefined' || isNaN(parseInt(size))) {
-		$('#compStatSize').addClass('has-error');
+		$('#compStatSize').parent().addClass('has-error');
 		success = false;
 	}
 
@@ -51,7 +53,7 @@ function compStatLaunchTests() {
 	if (typeof min_size == 'undefined' || isNaN(parseInt(min_size)))
 		min_size = $('#compStatMinSize').attr('placeholder');
 	if (typeof min_size == 'undefined' || isNaN(parseInt(min_size))) {
-		$('#compStatMinSize').addClass('has-error');
+		$('#compStatMinSize').parent().addClass('has-error');
 		success = false;
 	}
 
@@ -59,9 +61,23 @@ function compStatLaunchTests() {
 	if (typeof pgs == 'undefined' || isNaN(parseInt(pgs)))
 		pgs = $('#compStatPgs').attr('placeholder');
 	if (typeof pgs == 'undefined' || isNaN(parseInt(pgs))) {
-		$('#compStatPgs').addClass('has-error');
+		$('#compStatPgs').parent().addClass('has-error');
 		success = false;
 	}
+
+	if (parseInt(size) > rule.max_size) {
+		$('#compStatSize').parent().addClass('has-error');
+		success = false;
+	};
+	if (parseInt(min_size) < rule.min_size) {
+		$('#compStatMinSize').parent().addClass('has-error');
+		success = false;
+	};
+	if (parseInt(min_size) > parseInt(size)) {
+		$('#compStatMinSize').parent().addClass('has-error');
+		$('#compStatSize').parent().addClass('has-error');
+		success = false;
+	};
 
 	if (success) return {'rule': rule, 'size': size, 'min_size': min_size, 'pgs': pgs};
 	else return false;
@@ -123,9 +139,6 @@ function compStatLaunch() {
 					else
 						return qScale(byOsd[d.id]);
 				});
-
-			console.log(sizes);
-			console.log(byOsd);
 		});
 	};
 };
