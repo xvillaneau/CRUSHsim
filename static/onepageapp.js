@@ -33,7 +33,7 @@ app.init = function() {
 
 	app.resize();
 
-	app.map = crushsim.crushmap();
+	app.map = crush.crushmap();
 }
 
 app.draw = function() {

@@ -204,7 +204,12 @@ onepageapp.html - Jinja template for the one page CRUSHsim app.
 	<script src="{{ url_for('static', filename='lib/math.min.js') }}"></script>
   <script src="{{ url_for('static', filename='lib/js.cookie.js') }}"></script>
 	{# Now, all our own JavaScript#}
-	<script src="{{ url_for('static', filename='crushmap.js') }}"></script>
+	<script src="{{ url_for('static', filename='crush.js') }}"></script>
+	<script src="{{ url_for('static', filename='crush-buckets.js') }}"></script>
+	<script src="{{ url_for('static', filename='crush-devices.js') }}"></script>
+	<script src="{{ url_for('static', filename='crush-rules.js') }}"></script>
+	<script src="{{ url_for('static', filename='crush-tunables.js') }}"></script>
+	<script src="{{ url_for('static', filename='crush-types.js') }}"></script>
 	<script src="{{ url_for('static', filename='opa-modal-welcome.js') }}"></script>
 	<script src="{{ url_for('static', filename='opa-modal-manager.js') }}"></script>
 	<script src="{{ url_for('static', filename='opa-menu-left.js') }}"></script>
