@@ -13,7 +13,7 @@
 
 var app = {};
 
-app.resize = function () {
+app.resize = function() {
 	// Gets the size of the window and applies it to the body and the graph
 	// TODO: This is awful IMHO and there's certainly a better way to do it
 	app.h = $(window).height()
@@ -26,7 +26,7 @@ app.resize = function () {
 	app.force.size([app.w, app.h]);
 }
 
-function initApp() {
+app.init = function() {
 	app.graph = d3.select("#appGraph").append("svg");
 	app.maincolor = d3.scale.category20();
 	app.force = d3.layout.force().charge(-120).linkDistance(30);
@@ -36,7 +36,7 @@ function initApp() {
 	app.map = crushsim.crushmap();
 }
 
-function initGraph() {
+app.draw = function() {
 	var data = app.map.graphData();
 
 	app.force
@@ -84,21 +84,21 @@ function initGraph() {
 };
 
 $(document).ready(function(){
-	initApp();
+	app.init();
 
 	var init_id = Cookies.get('map_id');
 
 	if (typeof init_id == 'undefined') {
 		app.map.init();
-		initGraph();
+		app.draw();
 		$('#welcomeModal').modal();
 	} else if (init_id == 'init') {
 		app.map.init();
-		initGraph();
+		app.draw();
 	} else {
 		$.get('/api/crushmap/'+init_id, function(data) {
 			app.map.textMap(data);
-			initGraph();
+			app.draw();
 		})
 	};
 });
