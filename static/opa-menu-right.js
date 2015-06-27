@@ -12,21 +12,21 @@
 
 function updateCompStatRule() {
 	var ruleset = document.getElementById('compStatRule').value,
-		rule = map.rules.getByRuleset(ruleset);
+		rule = app.map.rules.getByRuleset(ruleset);
 
 	$('#compStatSize').attr("placeholder",rule.max_size)
 	$('#compStatMinSize').attr("placeholder",rule.min_size)
 
 	var size = document.getElementById('compStatSize').value;
 	if (isNaN(parseInt(size)))
-		$('#compStatPgs').attr("placeholder",map.suggestPgs(ruleset));
+		$('#compStatPgs').attr("placeholder",app.map.suggestPgs(ruleset));
 	else
-		$('#compStatPgs').attr("placeholder",map.suggestPgs(ruleset, size));
+		$('#compStatPgs').attr("placeholder",app.map.suggestPgs(ruleset, size));
 };
 
 function updateCompStatSize() {
 	var ruleset = document.getElementById('compStatRule').value;
-	$('#compStatPgs').attr("placeholder",map.suggestPgs(ruleset, this.value))
+	$('#compStatPgs').attr("placeholder",app.map.suggestPgs(ruleset, this.value))
 };
 
 function compStatLaunchTests() {
@@ -35,7 +35,7 @@ function compStatLaunchTests() {
 
 	$('.compStatPanel .form-group').removeClass('has-error');
 
-	rule = map.rules.getByRuleset(document.getElementById('compStatRule').value);
+	rule = app.map.rules.getByRuleset(document.getElementById('compStatRule').value);
 	if (typeof rule == 'undefined') {
 		$('#compStatRule').parent().addClass('has-error');
 		success = false;
@@ -88,7 +88,7 @@ function compStatLaunch() {
 
 	if (params) {
 		$('.compStatResPanel').slideUp();
-		map.simulate(params.rule.ruleset, params.size, params.pgs, function(res) {
+		app.map.simulate(params.rule.ruleset, params.size, params.pgs, function(res) {
 			var sizes = {},
 			    byOsd = {},
 					lines = res.split('\n');
@@ -129,10 +129,10 @@ function compStatLaunch() {
 			$('.compStatResPanel').slideDown();
 
 			var qScale = d3.scale.quantile()
-			   .domain([0, params.pgs * params.size / map.buckets.json().length])
+			   .domain([0, params.pgs * params.size / app.map.buckets.json().length])
 			   .range(colorbrewer.RdBu[11]);
 
-			d3.select('svg').selectAll('.node.type-osd')
+			app.graph.selectAll('.node.type-osd')
 				.style('fill', function(d) {
 					if (isNaN(byOsd[d.id]))
 						return qScale(0);
@@ -145,7 +145,7 @@ function compStatLaunch() {
 
 function initRightMenu() {
 	d3.select('#compStatRule')
-		.selectAll('option').data(map.rules.json())
+		.selectAll('option').data(app.map.rules.json())
 		.enter().append('option')
 		.attr('value', function(d){return d.ruleset})
 		.attr('selected', function(d,i){if (i==0) return 'selected'; else return null;})
