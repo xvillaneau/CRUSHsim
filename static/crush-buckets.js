@@ -64,7 +64,6 @@ crush.buckets = function() {
     byName[obj.name] = bList.length;
     bList.push(obj);
 
-    return true;
   };
 
   bucketsObj.dump = function() {

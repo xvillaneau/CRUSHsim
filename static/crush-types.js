@@ -10,7 +10,7 @@
 // crush-types.js - Javascript objet for CRUSH map types
 //
 
-function typesConstructor() {
+crush.types = function() {
   var typesObj = {},
     byId = {},
     byName = {};

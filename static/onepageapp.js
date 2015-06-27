@@ -97,7 +97,7 @@ $(document).ready(function(){
 		app.draw();
 	} else {
 		$.get('/api/crushmap/'+init_id, function(data) {
-			app.map.textMap(data);
+			app.map.parse(data);
 			app.draw();
 		})
 	};

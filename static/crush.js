@@ -26,36 +26,43 @@ crush.crushmap = function() {
 		types = crush.types();
 
 
-	function parseTextMap(input) {
+	map.parse = function(input) {
+		// Takes a raw text map and fills in the class from it
+
 		var list = input.split('\n'),
-			line, block,
+			line, block, output,
 			inBlock = '';
 
 		for (var i = 0; i < list.length; i++) {
+
+			// Removes blanks and comments, keeping only the useful part
 			line = list[i]
 				.replace(RegExp('^[ \t]*'),'')
 				.replace(RegExp('[ \t]*#.*'),'');
 			l = line.split(' ');
 
+			// Skip if line is empty
 			if (! line) continue;
 
 			else if (line == '}') {
 				// Get out of rule/bucket mode
-				if (inBlock == 'rule') rules.parse(block);
-				else if (inBlock == 'bucket') buckets.parse(block, types);
+				if (inBlock == 'rule') output = rules.parse(block); // Only returns something if it fails
+				else if (inBlock == 'bucket') output = buckets.parse(block, types);
 				inBlock = '';
-				continue;
 			}
 
 			else if (inBlock) {block.push(line); continue;}
 
-			else if (line.startsWith('device ')) devices.parse(line);
-			else if (line.startsWith('tunable ')) tunables.parse(line);
-			else if (line.startsWith('type ')) types.parse(line);
+			else if (line.startsWith('device ')) output = devices.parse(line);
+			else if (line.startsWith('tunable ')) output = tunables.parse(line);
+			else if (line.startsWith('type ')) output = types.parse(line);
+
 			else if (line.startsWith('rule ')) {block = [line]; inBlock = 'rule'}
 			else {block = [line]; inBlock = 'bucket'}
+
+			if (output) return output; // Parsing only returns something if it fails
 		}
-	};
+	}
 
 	map.textMap = function(m){
 		if (!arguments.length) {
@@ -71,7 +78,7 @@ crush.crushmap = function() {
 				+ rules.dump()
 				+ '\n# end crush map';
 		}
-		else parseTextMap(m);
+		else map.parse(m);
 	};
 
 	map.jsonMap = function(){

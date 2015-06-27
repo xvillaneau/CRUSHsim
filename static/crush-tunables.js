@@ -10,7 +10,7 @@
 // crush-tunables.js - Javascript objet for CRUSH map tunables
 //
 
-function tunsConstructor() {
+crush.tunables = function() {
   var tunsObj = {},
     tuns = {};
 
