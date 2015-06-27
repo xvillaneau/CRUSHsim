@@ -31,7 +31,7 @@ onepageapp.css - CSS and styles for the app
 }
 
 /* This is the circle that appears in "arrange nodes in circle" mode */
-#appGraph .circle-osd {
+#appGraph .node-circle {
 	stroke: lightgrey;
 	stroke-width: 1px;
 	stroke-dasharray: 10,20;
@@ -45,9 +45,17 @@ onepageapp.css - CSS and styles for the app
 
 /* Applies to the colored dots in the legend table.
 Makes then bigger but doesn't expand the row.*/
-.legendPanel table span {
+.legendPanel table span.dot {
 	font-size: 2em;
 	line-height: 0;
+}
+
+.legendPanel table span.circle {
+	cursor: pointer;
+}
+
+.legendPanel table span.circle.text-primary {
+	font-weight: bold;
 }
 
 /* Global node and link appearance for the graph */

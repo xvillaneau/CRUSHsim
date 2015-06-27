@@ -65,7 +65,6 @@ crush.crushmap = function() {
 	}
 
 	map.textMap = function(m){
-		if (!arguments.length) {
 			return '# begin crush map\n'
 				+ tunables.dump()
 				+ '\n# devices\n'
@@ -77,8 +76,6 @@ crush.crushmap = function() {
 				+ '\n# rules\n'
 				+ rules.dump()
 				+ '\n# end crush map';
-		}
-		else map.parse(m);
 	};
 
 	map.jsonMap = function(){
@@ -134,7 +131,6 @@ crush.crushmap = function() {
 				addLink(b.id, item.id);
 			};
 		};
-		out.types = types.json();
 		return out;
 	};
 
@@ -146,25 +142,11 @@ crush.crushmap = function() {
 		types.init();
 	}
 
-	map.buckets = (function(){
-		return buckets;
-	})()
-
-	map.devices = (function(){
-		return devices;
-	})()
-
-	map.rules = (function(){
-		return rules;
-	})()
-
-	map.tunables = (function(){
-		return tunables;
-	})()
-
-	map.types = (function(){
-		return types;
-	})()
+	map.buckets = (function(){return buckets;})()
+	map.devices = (function(){return devices;})()
+	map.rules = (function(){return rules;})()
+	map.tunables = (function(){return tunables;})()
+	map.types = (function(){return types;})()
 
 	map.simulate = function(ruleset, size, pgs, callback) {
 		if (arguments.length < 3 || arguments.length > 4) return false;

@@ -11,20 +11,29 @@
 //
 
 function initLegendPanel() {
+	app.displayTypes = [];
+
 	d3.select('#appMenuL .legendPanel tbody')
 		.selectAll('tr').data(app.map.types.json())
 	    .enter().append('tr')
 		.html(function(d) {
-			return '<td><span style="color: '+app.maincolor(d.id_type)+'">&#9679;</span></td>'
+			return '<td><span class="dot" style="color: '+app.maincolor(d.id_type)+'">&#9679;</span></td>'
 				+ '<td>' + d.id_type + '</td>'
-				+ '<td>' + d.name + '</td>';
+				+ '<td>' + d.name + '</td>'
+				+ '<td><span crushtype="' + d.name + '" class="glyphicon glyphicon-record circle circle-' + d.name + ' text-muted" aria-hidden="true"></span></td>';
 		})
+		.each(function(d,i){app.displayTypes[i] = d.name})
 		.on('mouseover', function(d) {
 			app.graph.selectAll('.node').style('stroke', 'white');
 			app.graph.selectAll('.type-' + d.name).style('stroke', 'black');
 		})
 		.on('mouseout', function(d) {
 			app.graph.selectAll('.node').style('stroke', 'white');
+		});
+
+		$('.legendPanel span.circle').on('click', function() {
+			$(this).toggleClass('text-muted').toggleClass('text-primary');
+			updateNodeCircle($(this).attr('crushtype'))
 		});
 };
 
@@ -37,19 +46,19 @@ function updateInfoPanel(d) {
 };
 
 function updateNodeCircle(type) {
-	if (document.getElementById('optOsdCircle').checked) {
+	if ($('.legendPanel .circle-'+type).hasClass('text-primary')) {
 		var osdList = app.map.devices.json(),
-			radius = app.h / 2 * 0.9,
-			baseAngle = 2 * Math.PI / osdList.length,
-			angles = {};
+			radius, angle;
+
+		radius = 0.9 - 0.8 * app.displayTypes.indexOf(type) / (app.displayTypes.length - 1);
+		radius = app.h / 2 * radius;
+		angle = 2 * Math.PI / osdList.length;
 
 		app.graph.insert('circle', ":first-child")
-			.attr('class', 'circle-osd')
+			.attr('class', 'node-circle circle-'+type)
 			.attr('r', radius)
 			.attr('cx', app.w / 2)
 			.attr('cy', app.h / 2)
-
-		for (var i = 0; i < osdList.length; i++) angles[osdList[i].id] = i * baseAngle;
 
 		var circledrag = d3.behavior.drag()
 			.origin(function(d) {return d;})
@@ -59,7 +68,7 @@ function updateNodeCircle(type) {
 				var x,y,
 				    a = math.arg(math.complex(app.h/2 - d3.event.y, d3.event.x - app.w/2));
 
-				a = baseAngle * math.floor(a / baseAngle + 0.5);
+				a = angle * math.floor(a / angle + 0.5);
 				x = app.w/2 + radius * Math.sin(a)
 				y = app.h/2 - radius * Math.cos(a)
 				d3.select(this)
@@ -72,27 +81,25 @@ function updateNodeCircle(type) {
 				app.force.resume();
 			})
 
-		app.graph.selectAll(".type-osd")
-			.each(function(d) {
-				d.px = radius * Math.sin(angles[d.id]) + app.w / 2;
-				d.py = -radius * Math.cos(angles[d.id]) + app.h / 2;
+		app.graph.selectAll(".type-"+type)
+			.each(function(d, i) {
+				d.px = radius * Math.sin(i * angle) + app.w / 2;
+				d.py = -radius * Math.cos(i * angle) + app.h / 2;
 				d.fixed = true;
 			})
 			.call(circledrag)
 
 		app.force.resume()
 	} else {
-		app.graph.select('.circle-osd').remove()
-		app.graph.selectAll(".type-osd")
+		app.graph.select('.circle-'+type).remove()
+		app.graph.selectAll(".type-"+type)
 			.each(function(d) {d.fixed = false;})
 			.call(app.force.drag)
 		app.force.resume()
 	};
-
 };
 
 function initLeftMenu() {
-	document.getElementById('optOsdCircle').onchange = function(){updateNodeCircle('osd')}
 	initLegendPanel();
 };
 
