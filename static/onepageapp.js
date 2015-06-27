@@ -1,13 +1,14 @@
 
 // ====================================================================
-// CRUSHSim - CRUSH Simulation web app for Ceph admins
+// CRUSHsim - CRUSH Simulation web app for Ceph admins
 // ---------------------------------------------------
 //
 // By Xavier Villaneau, 2015
-// xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+// xvillaneau@gmail.com
 // Claranet SAS, Rennes, France
 // ====================================================================
-// onepageapp.js - First draft for the CRUSHsim one page application
+// onepageapp.js - Core of the CRUSHsim app, calls everything once the
+// page is ready
 //
 
 var apph, appw, map;
@@ -16,7 +17,7 @@ $(document).ready(function(){
 	apph = $(window).height()
 	appw = $(window).width()
 	// Fixes the size of the entire page
-	// TODO: This is awful and there's certainly a better way to do it
+	// TODO: This is awful IMHO and there's certainly a better way to do it
 	$('body').css('width', $(window).width());
 	$('body').css('height', $(window).height());
 

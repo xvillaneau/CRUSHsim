@@ -1,10 +1,10 @@
 
 // ====================================================================
-// CRUSHSim - CRUSH Simulation web app for Ceph admins
+// CRUSHsim - CRUSH Simulation web app for Ceph admins
 // ---------------------------------------------------
 //
 // By Xavier Villaneau, 2015
-// xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+// xvillaneau@gmail.com
 // Claranet SAS, Rennes, France
 // ====================================================================
 // opa-menu-left.js - Functions for the left menu

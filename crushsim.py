@@ -1,22 +1,18 @@
 
 # ====================================================================
-# CRUSHSim - CRUSH Simulation web app for Ceph admins
+# CRUSHsim - CRUSH Simulation web app for Ceph admins
 # ---------------------------------------------------
-# 
+#
 # By Xavier Villaneau, 2015
-# xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+# xvillaneau@gmail.com
 # Claranet SAS, Rennes, France
 # ====================================================================
 # crushsim.py - Core Python script for the server
 #  - Handles everything server-side
 #  - All pages and valid URLs are defined here
 #  - Manages the stored files and how they are accessed
-#  - Calls crushtool  to run the actual simulation
+#  - Calls crushtool to run the actual simulation
 #
-# Changelog:
-# ----------
-# May 4th 2015 - Initial release
-# June 15th 2015 - Now handles CRUSH map metadata and added GET/crushdata
 
 
 # Imports and initialization
@@ -85,7 +81,7 @@ uploads.configure_uploads(app, (crushupload))
 def _jinja2_filter_datetime(timestamp, fmt=None):
 	d = datetime.fromtimestamp(timestamp)
 	tfmt='%c'
-	return d.strftime(tfmt) 
+	return d.strftime(tfmt)
 
 # Flask Routing
 # -------------
@@ -116,11 +112,11 @@ def page_analyze():
 
 	if request.method == 'GET':
 		# Displays the Analyze page
-		return render_template('analyze.html', crushmaps= get_saved_maps())	
+		return render_template('analyze.html', crushmaps= get_saved_maps())
 
 	if request.method == 'POST':
 		# Will get all simulation parameters in the cookies and do
-		# many server-side checks before launching the simulation. 
+		# many server-side checks before launching the simulation.
 
 		params_ini = {}
 		params_fin = {}
@@ -141,7 +137,7 @@ def page_analyze():
 			data = crush_read_json(params['id'])
 			if not params['rule'] in data['rules'].keys():
 				return "There is no ruleset " + params['rule'] + " in the CRUSH map!", 400
-			
+
 			# Check if the given sizes are valid integers and have coherent values
 			try:
 				params['size'] = int(params['size'])
@@ -151,9 +147,9 @@ def page_analyze():
 
 			if params['size'] < params['minsize'] or params['minsize'] < 1:
 				return "The nominal and minimal sizes are invalid!", 400
-			
+
 			return "It went well !", 200
-		
+
 		res = check_params(params_ini)
 		if res[1] != 200:
 			return res
@@ -180,7 +176,7 @@ def page_analyze():
 			if 'size' in params.keys():
 				fileid += '_n' + str(params['size'])
 				options += ' --num-rep ' + str(params['size'])
- 
+
 			statpath = filedir['test_results'] + fileid + '.txt'
 
 			with open(str(statpath), 'w') as statfile:
@@ -205,7 +201,7 @@ def page_results():
 @app.route('/simulation/<sim_id>')
 def page_simulation(sim_id):
 	return send_from_directory(filedir['test_results'], sim_id + '.txt')
-	
+
 
 @app.route('/onepageapp')
 def page_onepageapp():
@@ -238,19 +234,19 @@ def api_simulate():
 		return "Bad request, expecting CRUSH map", 400
 	if (crushmap == ""):
 		return "Bad request, expecting CRUSH map", 400
-		
+
 	# Now try to get the arguments
 	try:
 		args = request.args
 	except:
 		return "URL argument parsing has failed for some reason", 500
-	
+
 	# Test if rule and size are given. Otherwise, refuse to process
 	if not ('rule' in args and args['rule'].isdigit()):
 		return "Please specify a valid rule number to apply", 400
 	if not ('size' in args and args['size'].isdigit()):
 		return "Please specify a valid size to apply", 400
-	
+
 	# Assign a random uuid for the operation, build two filenames from it
 	tid = str(uuid.uuid4())
 	fntxtcrush = filedir['simulate'] + tid + '.txt'
@@ -272,12 +268,12 @@ def api_simulate():
 	options = ''
 	options += ' --rule ' + args['rule']
 	options += ' --num-rep ' + args['size']
-	
+
 	# If a certain number of PGs is asked, include it
 	if 'pgs' in args and args['pgs'].isdigit():
 		options += ' --min-x 0'
 		options += ' --max-x ' + str(int(args['pgs']) - 1)
-	
+
 	# Now, only weights should remain
 	for a in args.keys():
 		if (a.startswith('osd.') and a[4:].isdigit()):
@@ -298,7 +294,7 @@ def api_simulate():
 	app.logger.debug("API/Simulate - Executing " + simexecstr)
 	simproc = Popen(simexecstr, shell=True, stdout=PIPE)
 	output = simproc.stdout.read()
-	
+
 	os.remove(fnbincrush)
 
 	# Everything went well (I hope), let's send the results!
@@ -314,16 +310,16 @@ def api_crushmap():
 		return resp
 
 	if request.method == 'POST':
-		
+
 		if 'crushTextFile' in request.files:
 			# The request we're getting is for a brand new CRUSH map
-		
+
 			fileid = str(uuid.uuid4())
-			
+
 			# Upload text file to tmp/crushtxtfiles
 			# The '.' at the end tells FlaskUpload to append file extension
 			crushupload.save(request.files['crushTextFile'],name= fileid + '.')
-			
+
 			# Metadata handling
 			metadata = {}
 			if 'crushTextName' in request.form:
@@ -338,14 +334,14 @@ def api_crushmap():
 					mdf.write(json.dumps(metadata))
 
 			#flash('CRUSH map uploaded with ID ' + fileid, category='success')
-			
+
 			response = redirect(redir)
 			response.set_cookie('map_id', fileid)
 
 			return response
 
 @app.route('/api/crushmap/<crush_id>', methods=['GET', 'PUT', 'DELETE'])
-def api_crushmap_id(crush_id): 
+def api_crushmap_id(crush_id):
 	if request.method == "GET":
 		return send_from_directory(filedir['txt_maps'], crush_id + '.txt')
 
@@ -354,7 +350,7 @@ def api_crushmap_id(crush_id):
 			inputdata = request.get_json()
 		except:
 			return "The given request is not valid JSON", 400
-	
+
 		if os.path.isfile(filedir['txt_maps'] + crush_id + ".metadata.json"):
 			with open(filedir['txt_maps'] + crush_id + ".metadata.json") as mdfr:
 				prevdata = json.loads(mdfr.read())
@@ -368,14 +364,14 @@ def api_crushmap_id(crush_id):
 
 		resp = make_response("It worked!")
 		return resp
-	
+
 	if request.method == "DELETE":
 		filename = filedir['txt_maps'] + crush_id
 		if os.path.isfile(filename + ".txt"):
 			os.remove(filename + ".txt")
 		if os.path.isfile(filename + ".metadata.json"):
 			os.remove(filename + ".metadata.json")
-		return 'Success, I think?'	
+		return 'Success, I think?'
 
 
 @app.route('/crushdata', methods=['GET','POST'])
@@ -387,16 +383,16 @@ def page_crushdata_noid():
 		return resp
 
 	if request.method == 'POST':
-		
+
 		if 'crushTextFile' in request.files:
 			# The request we're getting is for a brand new CRUSH map
-		
+
 			fileid = str(uuid.uuid4())
-			
+
 			# Upload text file to tmp/crushtxtfiles
 			# The '.' at the end tells FlaskUpload to append file extension
 			crushupload.save(request.files['crushTextFile'],name= fileid + '.')
-			
+
 			# Metadata handling
 			metadata = {}
 			if 'crushTextName' in request.form:
@@ -412,7 +408,7 @@ def page_crushdata_noid():
 					crush_unwrap(crushfile, jsonfile)
 
 			flash('CRUSH map uploaded with ID ' + fileid, category='success')
-			
+
 			return redirect('/')
 
 		else:
@@ -438,7 +434,7 @@ def page_crushdata_noid():
 
 
 @app.route('/crushdata/<crush_id>', methods=['GET','PUT'])
-def crushdata_withid(crush_id): 
+def crushdata_withid(crush_id):
 	if request.method == "GET":
 		if crush_id.endswith('.json'):
 			return send_from_directory(filedir['json_maps'], crush_id)
@@ -451,7 +447,7 @@ def crushdata_withid(crush_id):
 		except:
 			return "The given request is not valid JSON", 400
 
-	
+
 		if os.path.isfile(filedir['txt_maps'] + crush_id + ".metadata.json"):
 			with open(filedir['txt_maps'] + crush_id + ".metadata.json") as mdfr:
 				prevdata = json.loads(mdfr.read())
@@ -465,7 +461,7 @@ def crushdata_withid(crush_id):
 
 		resp = make_response("It worked!")
 		return resp
-		
+
 
 @app.route('/crushtree/<crush_id>')
 def crushtree(crush_id):
@@ -473,10 +469,10 @@ def crushtree(crush_id):
 	if crush_id.endswith('.json'):
 		# The output is going to be JSON anyway...
 		crush_id = crush_id[:-5]
-	
+
 	if not crush_exists(crush_id):
 		abort(404)
-	
+
 	with open(filedir['json_maps'] + crush_id + '.json') as crushfile:
 		crushdata = json.loads(crushfile.read())
 
@@ -533,42 +529,42 @@ def crush_unwrap(crushfile, jsonfile):
 	Required parameter : file object to write into
 	Output : CRUSH map dictionnary
 	"""
-	
+
 	# Empty data declaration
 	crushtunables = {}
 	crushtypes = {}
 	crushdevices = []
 	crushbuckets = {}
 	crushrules = {}
-	
+
 	# Variables for rule/bucket mode
 	inrule = ''
 	inbucket = ''
-	
+
 	for line in crushfile:
 		# Keep only the interesting part of lines
 		m = re.search('^\s*([\w\-{}\. ]*)', line)
 		line = m.group(1)
 		tmp = line.split(' ')
-		
+
 		if line == '':
 			# Skip whole process if there is no useful information
 			continue
-		
+
 		elif line == '}':
 			# Get out of rule/bucket mode
 			if inrule:
 				crushrules[int(rule['ruleset'])] = rule
 			inrule = ''
 			inbucket = ''
-		
+
 		elif inrule:
 			# Rule mode
 			if tmp[0] == 'step':
 				rule['step'].append(' '.join(tmp[1:]))
 			else:
 				rule[tmp[0]] = ' '.join(tmp[1:])
-		
+
 		elif inbucket:
 			# Bucket mode
 			if tmp[0] == 'item':
@@ -580,40 +576,40 @@ def crush_unwrap(crushfile, jsonfile):
 				crushbuckets[inbucket]['id'] = int(tmp[1])
 			else:
 				crushbuckets[inbucket][tmp[0]] = tmp[1]
-		
+
 		elif line.startswith('tunable '):
 			# Tunable declaration
 			crushtunables[tmp[1]] = tmp[2]
-		
+
 		elif line.startswith('type' ):
 			# Type declaration
 			crushtypes[int(tmp[1])] = tmp[2]
-		
+
 		elif line.startswith('device '):
 			# OSD declaration
 			crushdevices.append(int(tmp[1]))
-		
+
 		elif line.startswith('rule '):
 			# Rule start
 			inrule = tmp[1]
 			rule = {}
 			rule['name'] = inrule
 			rule['step'] = [] # Must be an array to stay ORDERED
-		
+
 		else:
 			# It should be a bucket... I hope
 			inbucket = tmp[1]
 			crushbuckets[inbucket] = {}
 			crushbuckets[inbucket]['type'] = tmp[0]
 			crushbuckets[inbucket]['item'] = []
-	
+
 	crushdata = {}
 	crushdata['tunables'] = crushtunables
 	crushdata['devices'] = crushdevices
 	crushdata['types'] = crushtypes
 	crushdata['buckets'] = crushbuckets
 	crushdata['rules'] = crushrules
-	
+
 	jsonfile.write(json.dumps(crushdata))
 
 
@@ -626,7 +622,7 @@ def crush_wrap (crushdata, crushfilename):
 
 	def recursive_bucket_write(bucketname, crushdata, crushfile):
 		"""Internal recursive function used to write the buckets in a specific order.
-		This is necessary because a bucket must be declared before used as item of 
+		This is necessary because a bucket must be declared before used as item of
 		another hierarchically higher bucket."""
 
 		b = crushdata[str(bucketname)]
@@ -636,7 +632,7 @@ def crush_wrap (crushdata, crushfilename):
 				if not item['name'].startswith('osd.'):
 					# If it's not as OSD, go deeper in recursion to write it first
 					recursive_bucket_write(item['name'], crushdata, crushfile)
-					
+
 		# All 'children' buckets have been taken care of, now the bucket itself can be written
 		crushfile.write(b['type'] + ' ' + bucketname + ' {\n')
 		crushfile.write('\tid ' + str(b['id']) + '\t\t# do not change unnecessarily\n')
@@ -699,36 +695,36 @@ def crush_makejsontree(crushbuckets):
 	Generates a tree of the cluster map from "raw" CRUSH buckets data.
 	Required for display of the map with D3.
 	"""
-	
+
 	# We're only going to add one entry, so a shallow copy is enough
 	buckets = crushbuckets.copy()
-	
+
 	# Find the roots of the CRUSH map
 	roots = []
 	for b in buckets:
 		if buckets[b]['type'] == 'root':
 			roots.append(b)
-	
+
 	# Add a "cluster" element to the buckets, used as entry point for the recursive search
 	buckets['cluster'] = {}
 	buckets['cluster']['item'] = [{'name': r} for r in roots]
-	
+
 	def recursive_tree_build(buckets, target):
 		"""
 		Recursive function used to build a tree dictionnary of the CRUSH map.
 		Given the list of the buckets and an entry point, returns the tree from this point.
 		"""
-		
+
 		tree = {}
 		tree['name'] = target
 		tree['children'] = []
-		
+
 		if target != 'cluster':
 			# The 'cluster' entry is different: it doesn't exist in the actual
 			# CRUSH map so it doesn't have any data. Otherwise, copy this data.
 			tree['id'] = buckets[target]['id']
 			tree['type'] = buckets[target]['type']
-		
+
 		for i in buckets[target]['item']:
 			# Walk through the children of the target
 			if i['name'].startswith('osd.'):
@@ -742,7 +738,7 @@ def crush_makejsontree(crushbuckets):
 				# Otherwise, go one step further in recursion
 				tmp = recursive_tree_build(buckets, i['name'])
 			tree['children'].append(tmp)
-		
+
 		return tree
 
 	return recursive_tree_build(buckets, 'cluster')

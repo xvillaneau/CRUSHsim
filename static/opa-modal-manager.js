@@ -1,10 +1,10 @@
 
 // ====================================================================
-// CRUSHSim - CRUSH Simulation web app for Ceph admins
+// CRUSHsim - CRUSH Simulation web app for Ceph admins
 // ---------------------------------------------------
-// 
+//
 // By Xavier Villaneau, 2015
-// xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+// xvillaneau@gmail.com
 // Claranet SAS, Rennes, France
 // ====================================================================
 // opa-modal-managet.js - Functions for the manager modal
@@ -24,7 +24,7 @@ function showManagerModal() {
 			$('#managerModal tbody').empty();
 
 			for (var i = 0; i < data.length; i++) {
-				
+
 				// For each map, append a new row to the table
 				var row = $('<tr>').appendTo('#managerModal tbody');
 
@@ -45,7 +45,7 @@ function showManagerModal() {
 						var form = $(this).parent();
 						// When the Rename button is clicked, send a PUT query to the server
 						$.ajax(
-							'/api/crushmap/' + this.crushUuid, 
+							'/api/crushmap/' + this.crushUuid,
 							{
 								'method': 'PUT',
 								'contentType': 'application/json',
@@ -64,7 +64,7 @@ function showManagerModal() {
 					  .on('click', function() {
 						var row = $(this).parent().parent().parent();
 						$.ajax(
-							'/api/crushmap/' + this.crushUuid, 
+							'/api/crushmap/' + this.crushUuid,
 							{
 								'method': 'DELETE',
 								'success': function() {row.slideUp().remove();}

@@ -1,10 +1,10 @@
 
 // ====================================================================
-// CRUSHSim - CRUSH Simulation web app for Ceph admins
+// CRUSHsim - CRUSH Simulation web app for Ceph admins
 // ---------------------------------------------------
 //
 // By Xavier Villaneau, 2015
-// xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+// xvillaneau@gmail.com
 // Claranet SAS, Rennes, France
 // ====================================================================
 // crushmap.js - Javascript objet for CRUSH map handling
@@ -298,6 +298,7 @@ crushsim.crushmap = function() {
 	};
 	rules = rulesConstructor();
 
+
 	function tunsConstructor() {
 		var tunsObj = {},
 			tuns = {};
@@ -333,7 +334,6 @@ crushsim.crushmap = function() {
 	tunables = tunsConstructor();
 
 
-	// Internal object for types management
 	function typesConstructor() {
 		var typesObj = {},
 			byId = {},
@@ -400,7 +400,6 @@ crushsim.crushmap = function() {
 		return typesObj;
 	};
 	types = typesConstructor();
-
 
 
 	function parseTextMap(input) {

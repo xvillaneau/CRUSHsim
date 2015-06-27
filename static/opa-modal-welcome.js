@@ -1,10 +1,10 @@
 
 // ====================================================================
-// CRUSHSim - CRUSH Simulation web app for Ceph admins
+// CRUSHsim - CRUSH Simulation web app for Ceph admins
 // ---------------------------------------------------
-// 
+//
 // By Xavier Villaneau, 2015
-// xavier.villaneau@fr.clara.net or xvillaneau@gmail.com
+// xvillaneau@gmail.com
 // Claranet SAS, Rennes, France
 // ====================================================================
 // opa-modal-welcome.js - Functions for the welcome modal
@@ -22,7 +22,7 @@ function showWelcomeLoad() {
 		} else {
 			$('#divWelcomeLoad tbody').empty();
 			for (var i = 0; i < data.length; i++) {
-				
+
 				// For each map, append a new row to the table
 				var row = $('<tr>').appendTo('#divWelcomeLoad tbody');
 				var rowtext = (typeof(data[i].name) != 'undefined' ? data[i].name : data[i].id);
@@ -39,7 +39,6 @@ function showWelcomeLoad() {
 		};
 	});
 };
-
 
 function initWelcomeModal() {
 
