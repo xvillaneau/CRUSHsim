@@ -53,6 +53,7 @@ crush.buckets = function() {
           item.weight = bList[byId[item.id]].weight
         }
         obj.weight += item.weight;
+        item.name = l[1];
         item.pos = obj.items.length;
         obj.items.push(item)
       }
@@ -124,6 +125,31 @@ crush.buckets = function() {
     if (!arguments.length) return byType;
     else return byType[type];
   };
+
+  bucketsObj.parents = function(name) {
+    var out = [];
+    for (var i = 0; i < bList.length; i++) {
+      var b = bList[i];
+      for (var j = 0; j < b.items.length; j++) {
+        var c = b.items[j];
+        if (c.name == name){
+          out.push(b.name);
+          out = out.concat(this.parents(b.name));
+        }
+      }
+    }
+    return out
+  }
+
+  bucketsObj.children = function(name) {
+    if (name.startsWith('osd.')) return [];
+    var b = bList[byName[name]], out = [];
+    for (var i = 0; i < b.items.length; i++) {
+      out.push(b.items[i].name);
+      out = out.concat(this.children(b.items[i].name));
+    }
+    return out;
+  }
 
   return bucketsObj;
 };
