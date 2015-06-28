@@ -47,12 +47,13 @@ function updateInfoPanel(d) {
 
 function updateNodeCircle(type) {
 	if ($('.legendPanel .circle-'+type).hasClass('text-primary')) {
-		var osdList = app.map.devices.json(),
-			radius, angle;
+		var radius, angle;
+
+		if (type == 'osd') angle = 2 * Math.PI / app.map.devices.json().length;
+		else angle = 2 * Math.PI / app.map.buckets.byType(type).length;
 
 		radius = 0.9 - 0.8 * app.displayTypes.indexOf(type) / (app.displayTypes.length - 1);
 		radius = app.h / 2 * radius;
-		angle = 2 * Math.PI / osdList.length;
 
 		app.graph.insert('circle', ":first-child")
 			.attr('class', 'node-circle circle-'+type)

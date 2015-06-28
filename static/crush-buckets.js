@@ -15,7 +15,8 @@ crush.buckets = function() {
   var bucketsObj = {},
     bList = [],
     byId = {},
-    byName = {};
+    byName = {}
+    byType = {};
 
   bucketsObj.parse = function(lines, types) {
     // Given the lines corresponding to a bucket in the CRUSH map
@@ -62,6 +63,8 @@ crush.buckets = function() {
 
     byId[obj.id] = bList.length;
     byName[obj.name] = bList.length;
+    if (typeof byType[obj.type_name] == 'undefined') byType[obj.type_name] = [];
+    byType[obj.type_name].push(obj);
     bList.push(obj);
 
   };
@@ -115,6 +118,11 @@ crush.buckets = function() {
     }];
     byId = {}; byId[-1] = 0;
     byName = {'default': 0};
+  };
+
+  bucketsObj.byType = function(type) {
+    if (!arguments.length) return byType;
+    else return byType[type];
   };
 
   return bucketsObj;
