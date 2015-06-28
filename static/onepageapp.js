@@ -36,6 +36,29 @@ app.init = function() {
 	app.map = crush.crushmap();
 }
 
+function highlightTree(data) {
+	var tree = [data.name]
+		.concat(app.map.buckets.parents(data.name))
+		.concat(app.map.buckets.children(data.name));
+
+	var fadedNodes = [];
+	app.graph.selectAll('.node')
+	 .style('fill-opacity','100%')
+	 .style('stroke-opacity','100%')
+	.filter(function(d) {return (tree.indexOf(d.name) < 0);})
+	 .each(function(d,i){fadedNodes.push(i)})
+	 .style('fill-opacity','10%')
+	 .style('stroke-opacity','10%');
+
+	app.graph.selectAll('.link')
+	 .style('stroke-opacity','100%')
+	.filter(function(d) {
+		return (tree.indexOf(d.source.name) < 0 || tree.indexOf(d.target.name) < 0 );
+	})
+	 .style('stroke-opacity','20%');
+};
+
+
 app.draw = function() {
 	var data = app.map.graphData();
 
@@ -63,6 +86,7 @@ app.draw = function() {
 			.on('mouseout', function(d){
 				$(this).css("stroke", 'white');
 			})
+			.on('click', highlightTree);
 
 		node.append("title")
 			.text(function(d) { return d.name; });
