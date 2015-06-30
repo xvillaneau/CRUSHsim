@@ -134,6 +134,21 @@ function compStatLaunch() {
 				});
 			$('.compStatResPanel').slideDown();
 
+
+			var byBucket = {}, totalWeight  = 0,
+			    bucketsInRule = app.map.bucketsInRule(params.rule.ruleset);
+			for (var osd in byOsd) {
+				byBucket['osd.'+osd] = byOsd[osd];
+				totalWeight += app.map.buckets.getByName('osd.'+osd).weight;
+				var parents = app.map.buckets.parents('osd.'+osd);
+				for (var i = 0; i < parents.length; i++) {
+					if (bucketsInRule.indexOf(parents[i]) < 0) continue;
+					if (isNaN(byBucket[parents[i]])) byBucket[parents[i]] = 0;
+					byBucket[parents[i]] += byOsd[osd];
+					totalWeight += app.map.buckets.getByName(parents[i]).weight;
+				}
+			}
+
 			// Color scale for PGs per OSD on graph
 			var osdsInRule = app.map.rules.osdsInRule(params.rule.ruleset, app.map.buckets);
 			var qScale = d3.scale.quantile()

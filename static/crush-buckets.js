@@ -121,12 +121,24 @@ crush.buckets = function() {
     byName = {'default': 0};
   };
 
+  bucketsObj.getByName = function(name) {
+    if (name.startsWith('osd.')) {
+      var out = {'name': name, 'id': parseInt(name.slice(4)),
+                 'type_name' : 'osd', 'type_id': 0};
+      out.weight = this.getByName(this.parents(name,1)[0]).items
+                  .filter(function(i){return i.name == name;})[0].weight;
+      return out;
+    }
+    return bList[byName[name]];
+  }
+
   bucketsObj.byType = function(type) {
     if (!arguments.length) return byType;
     else return byType[type];
   };
 
-  bucketsObj.parents = function(name) {
+  bucketsObj.parents = function(name, levels) {
+    if (arguments.length == 1) levels = -1;
     var out = [];
     for (var i = 0; i < bList.length; i++) {
       var b = bList[i];
@@ -134,7 +146,7 @@ crush.buckets = function() {
         var c = b.items[j];
         if (c.name == name){
           out.push(b.name);
-          out = out.concat(this.parents(b.name));
+          if (levels != 1) out = out.concat(this.parents(b.name, levels-1));
         }
       }
     }

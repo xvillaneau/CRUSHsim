@@ -212,6 +212,23 @@ crush.crushmap = function() {
 		return true;
 	};
 
+	map.bucketsInRule = function(ruleset) {
+		if (arguments.length != 1) return false;
+		var res = [],
+				rule = rules.getByRuleset(ruleset);
+		for (var s = 0; s < rule.steps.length; s++) {
+			if (rule.steps[s].op == 'take')
+				res = res.concat([rule.steps[s].item_name])
+				      .concat(buckets.children(rule.steps[s].item_name));
+		};
+		// Remove duplicate elements in res (Thank-you Stack Overflow!)
+		res = res.reduce(function(accum, current) {
+				if (accum.indexOf(current) < 0) accum.push(current);
+				return accum;
+			}, []);
+		return res;
+	}
+
 	return map;
 };
 
