@@ -37,25 +37,26 @@ app.init = function() {
 }
 
 function highlightTree(data) {
+	// Highlights all the parents and children of a given node
+
+	// Get the list of all parents and children
 	var tree = [data.name]
 		.concat(app.map.buckets.parents(data.name))
 		.concat(app.map.buckets.children(data.name));
 
-	var fadedNodes = [];
+	// Give full opacity to everybody, then dim the nodes which aren't in the tree
 	app.graph.selectAll('.node')
-	 .style('fill-opacity','100%')
-	 .style('stroke-opacity','100%')
+	 .style('fill-opacity','1')
+	 .style('stroke-opacity','1')
 	.filter(function(d) {return (tree.indexOf(d.name) < 0);})
-	 .each(function(d,i){fadedNodes.push(i)})
-	 .style('fill-opacity','10%')
-	 .style('stroke-opacity','10%');
+	 .style('fill-opacity','0.1')
+	 .style('stroke-opacity','0.1');
 
+	// Same for links
 	app.graph.selectAll('.link')
-	 .style('stroke-opacity','100%')
-	.filter(function(d) {
-		return (tree.indexOf(d.source.name) < 0 || tree.indexOf(d.target.name) < 0 );
-	})
-	 .style('stroke-opacity','20%');
+	 .style('stroke-opacity','1')
+	.filter(function(d) {return (tree.indexOf(d.source.name) < 0 || tree.indexOf(d.target.name) < 0 );})
+	 .style('stroke-opacity','0.2');
 };
 
 
