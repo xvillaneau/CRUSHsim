@@ -122,5 +122,23 @@ crush.rules = function() {
     byRuleset = {0: 0};
   };
 
+  rulesObj.osdsInRule = function(ruleset, buckets) {
+    if (arguments.length != 2) return false;
+    var res = [],
+        rule = this.getByRuleset(ruleset);
+    for (var s = 0; s < rule.steps.length; s++) {
+      if (rule.steps[s].op == 'take')
+        res = res.concat(buckets.children(rule.steps[s].item_name)
+              .filter(function(d){return d.startsWith('osd.');})
+        );
+    };
+    // Remove duplicate elements in res (Thank-you Stack Overflow!)
+    res = res.reduce(function(accum, current) {
+        if (accum.indexOf(current) < 0) accum.push(current);
+        return accum;
+      }, []);
+    return res;
+  };
+
   return rulesObj;
 };

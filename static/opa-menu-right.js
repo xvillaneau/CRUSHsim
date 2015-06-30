@@ -86,33 +86,40 @@ function compStatLaunchTests() {
 function compStatLaunch() {
 	var params = compStatLaunchTests();
 
-	if (params) {
-		$('.compStatResPanel').slideUp();
+	if (params) { // False if any if the tests fails
 		app.map.simulate(params.rule.ruleset, params.size, params.pgs, function(res) {
+			// Callback function after simulation success
 			var sizes = {},
 			    byOsd = {},
 					lines = res.split('\n');
 
 			for (var i = 0; i < lines.length; i++) {
+				// Iterate through the lines to compute results
 				if (lines[i].startsWith('CRUSH')) {
+					// For each line, get the assigned OSDs
 					var Osds = lines[i].split(" ")[5].slice(1).slice(0,-1).split(',');
 					var size = Osds.length;
 
 					for (var j = 0; j < Osds.length; j++) {
-						if (Osds[j] == '2147483647') size -= 1;
+						// Iterate through the OSDs
+						if (Osds[j] == '2147483647') size -= 1; // Missing OSD in EC placement
+						// Else increment or initiate count of PGs per OSD
 						else if (isNaN(byOsd[Osds[j]])) byOsd[Osds[j]] = 1;
 						else byOsd[Osds[j]] += 1;
 					}
 
+					// initiate or increment count of PGs per sze
 					if (isNaN(sizes[size])) sizes[size] = 1;
 					else sizes[size] += 1;
 				};
 			};
 
+			// For the list of PGs per size, D3 requires an array instead of an object
 			var d3sizes = [];
 			for (var s in sizes)
 				d3sizes.push({'num': s, 'pgs': sizes[s]});
 
+			// Display the list of PGs per size
 			d3.select('#appMenuR .compStatResPanel tbody').html('')
 				.selectAll('tr').data(d3sizes)
 				.enter().append('tr')
@@ -125,17 +132,18 @@ function compStatLaunch() {
 					return '<td>n = ' + d.num + '</td>'
 						+ '<td>' + d.pgs + '/' + params.pgs + '</td>'
 				});
-
 			$('.compStatResPanel').slideDown();
 
+			// Color scale for PGs per OSD on graph
+			var osdsInRule = app.map.rules.osdsInRule(params.rule.ruleset, app.map.buckets);
 			var qScale = d3.scale.quantile()
-			   .domain([0, params.pgs * params.size / app.map.buckets.json().length])
+			   .domain([0, 2* params.pgs * params.size / osdsInRule.length])
 			   .range(colorbrewer.RdBu[11]);
 
 			app.graph.selectAll('.node.type-osd')
 				.style('fill', function(d) {
-					if (isNaN(byOsd[d.id]))
-						return qScale(0);
+					if (isNaN(byOsd[d.id]) || ! d.name in osdsInRule)
+						return 'lightgrey';
 					else
 						return qScale(byOsd[d.id]);
 				});
