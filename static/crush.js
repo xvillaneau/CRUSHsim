@@ -114,7 +114,8 @@ crush.crushmap = function() {
 				'name': b.name,
 				'id': b.id,
 				'type_id': b.type_id,
-				'type': b.type_name
+				'type': b.type_name,
+				'crushWeight': b.weight
 			});
 
 			for (var j = 0; j < b.items.length; j++) {
@@ -125,7 +126,8 @@ crush.crushmap = function() {
 						'name': 'osd.'+item.id,
 						'id': item.id,
 						'type_id': 0, // Assuming type 0 is OSD, might not be the case ?
-						'type': 'osd' // Same remark, making assumptions here
+						'type': 'osd', // Same remark, making assumptions here
+						'crushWeight': item.weight
 					});
 				}
 				addLink(b.id, item.id);

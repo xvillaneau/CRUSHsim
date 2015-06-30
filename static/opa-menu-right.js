@@ -135,32 +135,32 @@ function compStatLaunch() {
 			$('.compStatResPanel').slideDown();
 
 
-			var byBucket = {}, totalWeight  = 0,
+			var byBucket = {}, totalWeight  = 0, totalPgCount = 0,
 			    bucketsInRule = app.map.bucketsInRule(params.rule.ruleset);
 			for (var osd in byOsd) {
 				byBucket['osd.'+osd] = byOsd[osd];
+				totalPgCount += byOsd[osd];
 				totalWeight += app.map.buckets.getByName('osd.'+osd).weight;
 				var parents = app.map.buckets.parents('osd.'+osd);
 				for (var i = 0; i < parents.length; i++) {
 					if (bucketsInRule.indexOf(parents[i]) < 0) continue;
 					if (isNaN(byBucket[parents[i]])) byBucket[parents[i]] = 0;
 					byBucket[parents[i]] += byOsd[osd];
-					totalWeight += app.map.buckets.getByName(parents[i]).weight;
 				}
 			}
 
 			// Color scale for PGs per OSD on graph
 			var osdsInRule = app.map.rules.osdsInRule(params.rule.ruleset, app.map.buckets);
 			var qScale = d3.scale.quantile()
-			   .domain([0, 2* params.pgs * params.size / osdsInRule.length])
-			   .range(colorbrewer.RdBu[11]);
+			   .domain([0, 2 * totalPgCount / totalWeight])
+			   .range(colorbrewer.Spectral[11]);
 
-			app.graph.selectAll('.node.type-osd')
+			app.graph.selectAll('.node')
 				.style('fill', function(d) {
-					if (isNaN(byOsd[d.id]) || ! d.name in osdsInRule)
+					if (isNaN(byBucket[d.name]) || ! d.name in bucketsInRule)
 						return 'lightgrey';
 					else
-						return qScale(byOsd[d.id]);
+						return qScale(byBucket[d.name] / d.crushWeight);
 				});
 		});
 	};
