@@ -100,8 +100,15 @@ function updateNodeCircle(type) {
 	};
 };
 
+function resetDisplay() {
+	app.graph.selectAll(".node")
+		.style("fill", function(d) { return app.maincolor(d.type_id); })
+		.style('fill-opacity','1').style('stroke-opacity','1');
+};
+
 function initLeftMenu() {
 	initLegendPanel();
+	document.getElementById("btnResetDisplay").onclick = resetDisplay;
 };
 
 // vim: set ts=4 sw=4 autoindent:
