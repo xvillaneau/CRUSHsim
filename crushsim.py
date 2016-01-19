@@ -290,7 +290,7 @@ def api_simulate():
 
 	# Execute the simulation itself
 	# TODO: catch simulation error
-	simexecstr = app.config['CRUSHTOOL_PATH'] + " --test --show-statistics -i " + fnbincrush + options
+	simexecstr = app.config['CRUSHTOOL_PATH'] + " --test --show-mappings -i " + fnbincrush + options
 	app.logger.debug("API/Simulate - Executing " + simexecstr)
 	simproc = Popen(simexecstr, shell=True, stdout=PIPE)
 	output = simproc.stdout.read()
