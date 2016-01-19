@@ -37,8 +37,8 @@ crush.rules = function() {
           obj.steps.push({'op': 'take', 'item_name': l[2]});
         else if (l[1] == 'emit')
           obj.steps.push({'op': 'emit'});
-        else if (l[1] == 'set_chooseleaf_tries')
-          obj.steps.push({'op': 'set_chooseleaf_tries', 'num': parseInt(l[2])});
+        else if (l[1] == 'set_chooseleaf_tries' || l[1] == 'set_choose_tries')
+          obj.steps.push({'op': l[1], 'num': parseInt(l[2])});
         else // Should be choose or chooseleaf, with firstn or indep
           obj.steps.push({'op': l[1]+'_'+l[2], 'num': parseInt(l[3]), 'type': l[5]});
           // TODO: There are definitely other cases
@@ -75,7 +75,7 @@ crush.rules = function() {
         output += '\tstep ';
         if (s.op == 'emit') output += 'emit';
         else if (s.op == 'take') output += 'take ' + s.item_name;
-        else if (s.op == 'set_chooseleaf_tries') output += s.op + ' ' + s.num;
+        else if (s.op == 'set_chooseleaf_tries' || s.op == 'set_choose_tries') output += s.op + ' ' + s.num;
         else {
           output += s.op.split('_')[0] + ' ' + s.op.split('_')[1] + ' ';
           output += s.num + ' type ' + s.type;
