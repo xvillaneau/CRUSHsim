@@ -104,6 +104,7 @@ app.draw = function() {
 
 	initWelcomeModal();
 	initManagerModal();
+	initEditorModal();
 	initLeftMenu();
 	initRightMenu();
 };

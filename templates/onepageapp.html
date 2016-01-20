@@ -30,6 +30,7 @@ onepageapp.html - Jinja template for the one page CRUSHsim app.
 		<div class="btn-group-vertical btn-block" role="group" aria-label="...">
 			<button class="btn btn-primary" id="btnShowWelcome">Choose map</button>
 			<button class="btn btn-default" id="btnShowManager">Manage maps</button>
+			<button class="btn btn-info" id="btnShowEditor">Edit map</button>
 		</div>
 		{# Displays information of an hovered node #}
 		<h4>Node information</h4>
@@ -187,6 +188,25 @@ onepageapp.html - Jinja template for the one page CRUSHsim app.
 			</div>
 		</div>
 	</div>
+	{#
+	====================================================================
+	Editor modal
+	Displays the current CRUSH map, and (might) allow live editing
+	====================================================================
+	#}
+	<div class="modal fade" id="editorModal" tabindex="-1" role="dialog" aria-labelledby="editorModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="editorModalLabel">Edit CRUSH map</h3>
+				</div>
+				<div class="modal-body">
+					<pre></pre>
+				</div>
+			</div>
+		</div>
+	</div>
 	{# Include ALL the libraries ! #}
 	<script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js') }}"></script>
@@ -203,6 +223,7 @@ onepageapp.html - Jinja template for the one page CRUSHsim app.
 	<script src="{{ url_for('static', filename='crush-types.js') }}"></script>
 	<script src="{{ url_for('static', filename='opa-modal-welcome.js') }}"></script>
 	<script src="{{ url_for('static', filename='opa-modal-manager.js') }}"></script>
+	<script src="{{ url_for('static', filename='opa-modal-editor.js') }}"></script>
 	<script src="{{ url_for('static', filename='opa-menu-left.js') }}"></script>
 	<script src="{{ url_for('static', filename='opa-menu-right.js') }}"></script>
 	<script src="{{ url_for('static', filename='onepageapp.js') }}"></script>
