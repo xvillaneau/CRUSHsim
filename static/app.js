@@ -27,6 +27,7 @@ app.resize = function() {
 }
 
 app.init = function() {
+	app.active = 'graph';
 	app.graph = d3.select("#appGraph").append("svg");
 	app.maincolor = d3.scale.category20();
 	app.force = d3.layout.force().charge(-120).linkDistance(30);

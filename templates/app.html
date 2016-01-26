@@ -45,7 +45,10 @@ app.html - Jinja template for the one page CRUSHsim app.
 			</table>
 		</div>
 		<h4>Display options</h4>
-		<button class="btn btn-block btn-default" id="btnResetDisplay">Reset display</button>
+		<div class="btn-group-vertical btn-block" role="group" aria-label="...">
+			<button class="btn btn-default" id="btnResetDisplay">Reset display</button>
+			<button class="btn btn-info" id="btnSwitchMode">Switch to editor</button>
+		</div>
 	</div>
 	{#
 	====================================================================
@@ -87,11 +90,16 @@ app.html - Jinja template for the one page CRUSHsim app.
     </div>
 	</div>
 	{#
-	================
-	The graph itself
-	================
+	========================
+	The app workspace itself
+	========================
 	#}
 	<div id="appGraph"></div>
+	<div id="appEditor" style="display: none">
+		<form>
+			<textarea name="appEditorTxtArea"></textarea>
+		</form>
+	</div>
 	{#
 	====================================================================
 	Welcome modal
