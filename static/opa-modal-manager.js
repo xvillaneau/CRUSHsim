@@ -79,7 +79,7 @@ function showManagerModal() {
 					 .prop('crushUuid', data[i].id)
 					 .on('click', function() {
 						Cookies.set('map_id', this.crushUuid, {'path': '/'});
-						window.location = "/onepageapp";
+						window.location = "/app";
 					});
 
 				$('<td>').appendTo(row)

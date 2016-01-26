@@ -203,14 +203,14 @@ def page_simulation(sim_id):
 	return send_from_directory(filedir['test_results'], sim_id + '.txt')
 
 
-@app.route('/onepageapp')
-def page_onepageapp():
-	return render_template('onepageapp.html')
+@app.route('/app')
+def page_app():
+	return render_template('app.html')
 
 
-@app.route('/onepageapp/<crush_id>')
-def page_onepageapp_id(crush_id):
-	response = make_response(render_template('onepageapp.html'))
+@app.route('/app/<crush_id>')
+def page_app_id(crush_id):
+	response = make_response(render_template('app.html'))
 	response.set_cookie('map_id', crush_id)
 	return response
 

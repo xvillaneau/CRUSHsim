@@ -7,7 +7,7 @@
 // xvillaneau@gmail.com
 // Claranet SAS, Rennes, France
 // ====================================================================
-// onepageapp.js - Core of the CRUSHsim app, calls everything once the
+// app.js - Core of the CRUSHsim app, calls everything once the
 // page is ready
 //
 

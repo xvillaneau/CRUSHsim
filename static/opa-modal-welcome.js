@@ -32,7 +32,7 @@ function showWelcomeLoad() {
 				row.append('<td>').children().text(rowtext)
 					.after('<td>').next().text(rowdate.toLocaleString())
 					.after('<td>').next().append('<a>').children()
-					.attr('href', '/onepageapp/'+data[i].id).text('Choose').addClass('btn btn-default btn-xs')
+					.attr('href', '/app/'+data[i].id).text('Choose').addClass('btn btn-default btn-xs')
 			};
 			$('#divWelcomeSelect').slideUp();
 			$('#divWelcomeLoad').slideDown();
@@ -44,7 +44,7 @@ function initWelcomeModal() {
 
 	document.getElementById('btnWelcomeInit').onclick = function() {
 		Cookies.set('map_id', 'init', {'path': '/'});
-		window.location = "/onepageapp";
+		window.location = "/app";
 	};
 
 	document.getElementById('btnWelcomeNew').onclick = function() {

@@ -7,7 +7,7 @@ By Xavier Villaneau, 2015
 xvillaneau@gmail.com
 Claranet SAS, Rennes, France
 ====================================================================
-onepageapp.html - Jinja template for the one page CRUSHsim app.
+app.html - Jinja template for the one page CRUSHsim app.
 #}
 <!DOCTYPE html>
 <html>
@@ -15,7 +15,7 @@ onepageapp.html - Jinja template for the one page CRUSHsim app.
 	<meta charset="utf-8">
 	<title>{% block title %}CRUSHsim{% endblock %}</title>
 	<link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-	<link href="{{ url_for('static', filename='onepageapp.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='app.css') }}" rel="stylesheet">
 	{% block header %}{% endblock %}
 </head>
 <body style="overflow: hidden;">
@@ -131,7 +131,7 @@ onepageapp.html - Jinja template for the one page CRUSHsim app.
 								<input type="file" id="crushTextFile" name="crushTextFile">
 								<p class="help-block">This should be a valid <b>decompiled text</b> CRUSH map</p>
 								<input type="text" id="crushTextName" name="crushTextName">
-								<input type="hidden" id="redirDest" name="redirDest" value="/onepageapp">
+								<input type="hidden" id="redirDest" name="redirDest" value="/app">
 							</div>
 							<button type="submit" class="btn btn-primary">Upload</button>
 							<button type="button" class="btn btn-default" id="btnWelcomeNewCancel">Cancel</button>
@@ -226,7 +226,7 @@ onepageapp.html - Jinja template for the one page CRUSHsim app.
 	<script src="{{ url_for('static', filename='opa-modal-editor.js') }}"></script>
 	<script src="{{ url_for('static', filename='opa-menu-left.js') }}"></script>
 	<script src="{{ url_for('static', filename='opa-menu-right.js') }}"></script>
-	<script src="{{ url_for('static', filename='onepageapp.js') }}"></script>
+	<script src="{{ url_for('static', filename='app.js') }}"></script>
 	{% block footer %}{% endblock %}
 </body>
 </html>
