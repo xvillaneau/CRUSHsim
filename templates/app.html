@@ -15,6 +15,7 @@ app.html - Jinja template for the one page CRUSHsim app.
 	<meta charset="utf-8">
 	<title>{% block title %}CRUSHsim{% endblock %}</title>
 	<link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='lib/codemirror.css') }}" rel="stylesheet">
 	<link href="{{ url_for('static', filename='app.css') }}" rel="stylesheet">
 	{% block header %}{% endblock %}
 </head>
@@ -202,7 +203,8 @@ app.html - Jinja template for the one page CRUSHsim app.
 	<script src="{{ url_for('static', filename='lib/colorbrewer.js') }}"></script>
 	<script src="{{ url_for('static', filename='lib/math.min.js') }}"></script>
   <script src="{{ url_for('static', filename='lib/js.cookie.js') }}"></script>
-	{# Now, all our own JavaScript#}
+	<script src="{{ url_for('static', filename='lib/codemirror.js') }}"></script>
+s	{# Now, all our own JavaScript#}
 	<script src="{{ url_for('static', filename='crush.js') }}"></script>
 	<script src="{{ url_for('static', filename='crush-buckets.js') }}"></script>
 	<script src="{{ url_for('static', filename='crush-devices.js') }}"></script>
