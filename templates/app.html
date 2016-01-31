@@ -96,11 +96,7 @@ app.html - Jinja template for the one page CRUSHsim app.
 	========================
 	#}
 	<div id="appGraph"></div>
-	<div id="appEditor" style="display: none">
-		<form>
-			<textarea name="appEditorTxtArea"></textarea>
-		</form>
-	</div>
+	<div id="appEditor" style="display: none"></div>
 	{#
 	====================================================================
 	Welcome modal
@@ -204,7 +200,7 @@ app.html - Jinja template for the one page CRUSHsim app.
 	<script src="{{ url_for('static', filename='lib/math.min.js') }}"></script>
   <script src="{{ url_for('static', filename='lib/js.cookie.js') }}"></script>
 	<script src="{{ url_for('static', filename='lib/codemirror.js') }}"></script>
-s	{# Now, all our own JavaScript#}
+	{# Now, all our own JavaScript#}
 	<script src="{{ url_for('static', filename='crush.js') }}"></script>
 	<script src="{{ url_for('static', filename='crush-buckets.js') }}"></script>
 	<script src="{{ url_for('static', filename='crush-devices.js') }}"></script>

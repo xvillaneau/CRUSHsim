@@ -112,6 +112,9 @@ function switchMode() {
 	if (app.active == 'graph') {
 		app.graph.remove()
 		$('#appEditor').show();
+		app.codemirror = CodeMirror(document.getElementById("appEditor"), {
+			value: app.map.textMap()
+		});
 	}
 };
 
