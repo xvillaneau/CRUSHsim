@@ -108,9 +108,17 @@ function resetDisplay() {
 		.style('stroke-opacity','1');
 };
 
+function switchMode() {
+	if (app.active == 'graph') {
+		app.graph.remove()
+		$('#appEditor').show();
+	}
+};
+
 function initLeftMenu() {
 	initLegendPanel();
 	document.getElementById("btnResetDisplay").onclick = resetDisplay;
+	document.getElementById("btnSwitchMode").onclick = switchMode;
 };
 
 // vim: set ts=4 sw=4 autoindent:
