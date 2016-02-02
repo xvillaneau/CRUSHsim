@@ -110,11 +110,13 @@ function resetDisplay() {
 
 function switchMode() {
 	if (app.active == 'graph') {
-		app.graph.remove()
-		$('#appEditor').show();
-		app.codemirror = CodeMirror(document.getElementById("appEditor"), {
-			value: app.map.textMap()
-		});
+		app.graph.remove();
+		editor.init();
+		app.active = 'editor';
+		self.innerHTML = "Save & Switch to graph";
+	} else {
+		app.active = 'graph';
+		self.innerHTML = "Switch to editor";
 	}
 };
 
