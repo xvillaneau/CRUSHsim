@@ -23,13 +23,37 @@ crush.devices = function() {
 
 		devsObj.parse = function(line) {
 			var l = line.split(' ');
-			if (! isNaN(parseInt(l[1]))) devs.push(parseInt(l[1]));
+			var id = parseInt(l[1]);
+
+			if (isNaN(id)) {
+				// Expecting number as second field of the line
+				return false
+			} else if (l[2].slice(0,4) == 'osd.') {
+				// Third field is osd.N
+				if (parseInt(l[2].slice(4)) == id) {
+					// If the N is coherent, push to list of devices
+					devs.push(parseInt(l[1]));
+				} else {
+					// If not, raise a failure
+					return false;
+				};
+			} else if (l[2] != 'device'+id) {
+				// If third field is deviceN, it's a placeholder for missing OSD
+				// If anything else, raise error
+				return false
+			};
 		};
 
 		devsObj.dump = function() {
-			var output = '';
-			for (var i = 0; i < devs.length; i++)
+			var output = '', d = 0;
+			for (var i = 0; i < devs.length; i++) {
+				if (devs[i] != (i + d)) {
+					// Missing device in the sequence
+					output += 'device ' + (i+d) + ' device' + (i+d) + '\n' ;
+					d++;
+				}
 				output += 'device ' + devs[i] + ' osd.' + devs[i] + '\n' ;
+			}
 			return output;
 		};
 
