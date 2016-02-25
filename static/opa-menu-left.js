@@ -115,9 +115,13 @@ function switchMode() {
 		app.active = 'editor';
 		self.innerHTML = "Save & Switch to graph";
 	} else {
-		app.active = 'graph';
-		self.innerHTML = "Switch to editor";
+		if (editor.close()) {
+			console.log('TRUC')
+			app.active = 'graph';
+			self.innerHTML = "Switch to editor";
+		}
 	}
+	this.blur()
 };
 
 function initLeftMenu() {
