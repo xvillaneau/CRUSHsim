@@ -1,5 +1,6 @@
 .*.swp
 *.cfg
+.vagrant
 venv/*
 tmp/*
 crushtool
