@@ -40,19 +40,23 @@ app = Flask(__name__)
 # ------------------------
 
 # Get configuration from file
-app.config.from_pyfile('crushsim.cfg', silent=True)
+try:
+    app.config.from_pyfile('crushsim.cfg')
+except:
+    print("crushsim.cfg not found, will be using defaults")
 
 # Require the SECRET_KEY to be set
 if not app.config['SECRET_KEY']:
-    print("Please set the SECRET_KEY in crushsim.cfg")
-    exit(1)
+    print("No SECRET_KEY defined, will generate a random one. "
+          "It is recommended to set it in crushsim.cfg")
 
 # Default custom configuration (those are not defined in Flask/Werkzeug)
 defaultconf = {
     'SERVER_ADDR': '127.0.0.1',
     'SERVER_PORT': 7180,
     'CRUSHTOOL_PATH': '/usr/bin/crushtool',
-    'FILES_DIR': 'tmp'
+    'FILES_DIR': 'tmp',
+    'SECRET_KEY': uuid.uuid4().hex
 }
 
 # Apply default configuration if not defined in the configuration file

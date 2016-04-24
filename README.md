@@ -1,6 +1,6 @@
 # CRUSHsim
 
-CRUSHsim is a small web-based tool intended for use by Ceph administrators, which builds a visualization of potential data movements in a Ceph cluster following any event that might change the output of the CRUSH algorithm: 
+CRUSHsim is a small web-based tool intended for use by Ceph administrators, which builds a visualization of potential data movements in a Ceph cluster following any event that might change the output of the CRUSH algorithm:
 - topology update (new OSD, removed OSD)
 - hardware failure
 - modification of pool properties (CRUSH rule, number of replicas)
@@ -39,7 +39,10 @@ CRUSHsim does not require an active connection to the Internet to work, since it
 
 Right now, CRUSHsim allows a few things to be configured, and this is done by setting the appropriate Python variables in `crushsim.cfg` in the root directory of the project.
 
-**Important:** You **MUST** set the `SECRET_KEY` variable before starting CRUSHsim. It will exit with an error if that's not the case.
+*Notice:* It is **strongly recommended** to set the `SECRET_KEY` variable before starting CRUSHsim. A random one will be generated if none is given, however it is better to have is statically defined. To generate a key, you can try:
+```
+head -c 20 /dev/urandom | sha1sum | cut -d' ' -f1
+```
 
 The available options are:
 - `SERVER_ADDR`: Defines the hostname for the server. I added this because Flask's `SERVER_NAME` doesn't allow a specific IP to be defined. Defaults to "127.0.0.1".
@@ -69,4 +72,4 @@ Currently, the graph only displays the differences between two sets of data plac
 
 Also, only minor modifications of the CRUSH map are currently supported. Moving a bucket is not supported. Buckets or devices that are different in the final and initial states may not share the same names or IDs. And that's only a few exceptions to name.
 
-This tool is a _Proof-of-Concept_ and not an actual reliable Ceph utility. You **MUST NOT** rely on it to disprove possibility of data loss on a running Ceph cluster. 
+This tool is a _Proof-of-Concept_ and not an actual reliable Ceph utility. You **MUST NOT** rely on it to disprove possibility of data loss on a running Ceph cluster.
