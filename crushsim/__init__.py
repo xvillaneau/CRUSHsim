@@ -37,25 +37,41 @@ app = Flask(__name__)
 # Configuration management
 # ------------------------
 
-# Apply default configuration
-app.config.from_object(default_cfg)
+def load_config():
+    # Apply default configuration
+    app.config.from_object(default_cfg)
 
-# Create the directory for temporary files if it doesn't exist
-if not os.path.exists(app.config['FILES_DIR']):
-    os.makedirs(app.config['FILES_DIR'])
+    config_tries = ['/etc/opt/crushsim.cfg', '../crushsim.cfg']
+    for cfg_file in config_tries:
+        try:
+            app.config.from_pyfile(cfg_file)
+            print("Found {}, importing settings.".format(cfg_file))
+        except IOError:
+            # Configuration file not found: ignore it
+            pass
+        except:
+            # Something else happened
+            raise
 
-# Create the subdirectories and store their paths for easier access
-filedir = {}
-for d in ['txt_maps', 'simulate']:
-    filedir[d] = app.config['FILES_DIR'] + '/' + d + '/'
-    if not os.path.exists(filedir[d]):
-        os.makedirs(filedir[d])
+    # Create the directory for temporary files if it doesn't exist
+    if not os.path.exists(app.config['FILES_DIR']):
+        os.makedirs(app.config['FILES_DIR'])
 
+    # Create the subdirectories and store their paths for easier access
+    filedir = {}
+    for d in ['txt_maps', 'simulate']:
+        filedir[d] = app.config['FILES_DIR'] + '/' + d + '/'
+        if not os.path.exists(filedir[d]):
+            os.makedirs(filedir[d])
 
-# FlaskUpload configuration
-app.config['UPLOADED_CRUSHUPLOAD_DEST'] = filedir['txt_maps']
-crushupload = uploads.UploadSet('crushupload', uploads.TEXT)
-uploads.configure_uploads(app, (crushupload))
+    # FlaskUpload configuration
+    app.config['UPLOADED_CRUSHUPLOAD_DEST'] = filedir['txt_maps']
+    crushupload = uploads.UploadSet('crushupload', uploads.TEXT)
+    uploads.configure_uploads(app, (crushupload))
+
+    return filedir, crushupload
+
+filedir, crushupload = load_config()
 
 
 # strftime filter for Jinja, for easier time handling
