@@ -1,4 +1,3 @@
-#!/usr/bin/python2.7
 # ====================================================================
 # CRUSHsim - CRUSH Simulation web app for Ceph admins
 # ---------------------------------------------------
@@ -29,9 +28,8 @@ from subprocess import Popen, PIPE
 import uuid
 import json
 import os
-from sys import exit
 from datetime import datetime
-
+from . import default_cfg
 
 app = Flask(__name__)
 
@@ -39,30 +37,8 @@ app = Flask(__name__)
 # Configuration management
 # ------------------------
 
-# Get configuration from file
-try:
-    app.config.from_pyfile('crushsim.cfg')
-except:
-    print("crushsim.cfg not found, will be using defaults")
-
-# Require the SECRET_KEY to be set
-if not app.config['SECRET_KEY']:
-    print("No SECRET_KEY defined, will generate a random one. "
-          "It is recommended to set it in crushsim.cfg")
-
-# Default custom configuration (those are not defined in Flask/Werkzeug)
-defaultconf = {
-    'SERVER_ADDR': '127.0.0.1',
-    'SERVER_PORT': 7180,
-    'CRUSHTOOL_PATH': '/usr/bin/crushtool',
-    'FILES_DIR': 'tmp',
-    'SECRET_KEY': uuid.uuid4().hex
-}
-
-# Apply default configuration if not defined in the configuration file
-for c in defaultconf.keys():
-    if c not in app.config.keys():
-        app.config[c] = defaultconf[c]
+# Apply default configuration
+app.config.from_object(default_cfg)
 
 # Create the directory for temporary files if it doesn't exist
 if not os.path.exists(app.config['FILES_DIR']):
@@ -320,11 +296,5 @@ def get_saved_maps():
     # Finally, sort maps by creation time before returning the list
     return sorted(crushmaps, key=lambda k: k['modtime'])
 
-
-# Flask application launch
-# ------------------------
-
-if __name__ == '__main__':
-    app.run(host=app.config['SERVER_ADDR'], port=app.config['SERVER_PORT'])
 
 # vim: set ts=4 sw=4 autoindent:

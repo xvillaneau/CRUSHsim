@@ -1,5 +1,7 @@
 .*.swp
 *.cfg
+*.pyc
+*.pyo
 .vagrant
 venv/*
 tmp/*
