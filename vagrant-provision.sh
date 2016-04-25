@@ -24,4 +24,4 @@ SERVER_PORT = 7180
 FILES_DIR = '$data_dir'
 EOF
 
-sudo -u www-data /usr/bin/python2.7 $bin_dir/crushsim.py &
+sudo -u www-data /usr/bin/python2.7 $bin_dir/run.py &
