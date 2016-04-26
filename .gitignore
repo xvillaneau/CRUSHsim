@@ -6,3 +6,6 @@
 venv/*
 tmp/*
 crushtool
+*.egg-info
+dist/
+build/
