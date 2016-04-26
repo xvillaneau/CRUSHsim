@@ -1,0 +1,212 @@
+{#
+====================================================================
+CRUSHsim - CRUSH Simulation web app for Ceph admins
+---------------------------------------------------
+
+By Xavier Villaneau, 2015
+xvillaneau@gmail.com
+Claranet SAS, Rennes, France
+====================================================================
+app.html - Jinja template for the one page CRUSHsim app.
+#}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{% block title %}CRUSHsim{% endblock %}</title>
+	<link href="{{ url_for('static', filename='lib/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='app.css') }}" rel="stylesheet">
+	{% block header %}{% endblock %}
+</head>
+<body style="overflow: hidden;">
+	{#
+	====================================================================
+	Left Menu
+	Include DISPLAY-related controls
+	====================================================================
+	#}
+	<div id="appMenuL">
+		{# Top buttions for showing the Welcome or Manager modals #}
+		<div class="btn-group-vertical btn-block" role="group" aria-label="...">
+			<button class="btn btn-primary" id="btnShowWelcome">Choose map</button>
+			<button class="btn btn-default" id="btnShowManager">Manage maps</button>
+		</div>
+		{# Displays information of an hovered node #}
+		<h4>Node information</h4>
+		<div class="panel panel-default infoPanel">
+			<div class="panel-body">Fly over a node to show its data</div>
+		</div>
+		{# Shows list of types #}
+		<h4>Legend</h4>
+		<div class="panel panel-default legendPanel">
+			<table class="table table-striped table-hover table-condensed">
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+		<h4>Display options</h4>
+		<button class="btn btn-block btn-default" id="btnResetDisplay">Reset display</button>
+	</div>
+	{#
+	====================================================================
+	Right Menu
+	Include SIMULATION-related controls
+	====================================================================
+	#}
+	<div id="appMenuR">
+		{# Forms for simulation parameters #}
+		<h4>Compute distribution</h4>
+		<div class="panel panel-default compStatPanel">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-xs-6 form-group">
+						<label class="control-label" for="compStatRule">CRUSH Rule</label>
+						<select class="form-control" id="compStatRule"></select>
+					</div>
+					<div class="col-xs-6 form-group">
+						<label class="control-label" for="compStatPgs">PGs</label>
+						<input type="text" class="form-control" id="compStatPgs">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6 form-group">
+						<label class="control-label" for="compStatSize">Size</label>
+						<input type="text" class="form-control" id="compStatSize">
+					</div>
+					<div class="col-xs-6 form-group">
+						<label class="control-label" for="compStatMinSize">Min. Size</label>
+						<input type="text" class="form-control" id="compStatMinSize">
+					</div>
+				</div>
+				<button class="btn btn-primary btn-block" id="btnCompStat">Compute distribution</button>
+			</div>
+		</div>
+		{# Panel and table for showing PG sizes #}
+    <div class="panel panel-default compStatResPanel" style="display: none;">
+      <table class="table table-striped table-hover table-condensed"><tbody></tbody></table>
+    </div>
+	</div>
+	{#
+	================
+	The graph itself
+	================
+	#}
+	<div id="appGraph"></div>
+	{#
+	====================================================================
+	Welcome modal
+	Allows to start from scratch, upload a map or load an existing one.
+	====================================================================
+	#}
+	<div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="welcomeModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="welcomeModalLabel">Welcome to CRUSHsim!</h4>
+					<p>Please choose how you wish to proceed.</p>
+				</div>
+				{# Buttons for mode choice #}
+				<div class="modal-body">
+					<div class="container-fluid" id="divWelcomeSelect">
+						<div class="row">
+							<div class="col-md-4">
+								<button class="btn btn-block btn-success" id="btnWelcomeInit">Start from<br>scratch</button>
+							</div>
+							<div class="col-md-4">
+								<button class="btn btn-block btn-info" id="btnWelcomeNew">Upload a new<br>CRUSH map</button>
+							</div>
+							<div class="col-md-4">
+								<button class="btn btn-block btn-primary" id="btnWelcomeLoad">Load a previously<br>saved map</button>
+							</div>
+						</div>
+					</div>
+					{# Upload form #}
+					<div id="divWelcomeNew" style="display: none;">
+						<h2>Upload a CRUSH map</h2>
+						<form action="/api/crushmap" method=POST enctype="multipart/form-data">
+							<div class="form-group">
+								<label for="crushTextFile">CRUSH map text file</label>
+								<input type="file" id="crushTextFile" name="crushTextFile">
+								<p class="help-block">This should be a valid <b>decompiled text</b> CRUSH map</p>
+								<input type="text" id="crushTextName" name="crushTextName">
+								<input type="hidden" id="redirDest" name="redirDest" value="/app">
+							</div>
+							<button type="submit" class="btn btn-primary">Upload</button>
+							<button type="button" class="btn btn-default" id="btnWelcomeNewCancel">Cancel</button>
+						</form>
+					</div>
+					{# Load map form #}
+					<div id="divWelcomeLoad" style="display: none;">
+						<h2>Choose a CRUSH map</h2>
+						<table class="table table-striped table-hover">
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>Last modified</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+						<button class="btn btn-default" id="btnWelcomeLoadCancel">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{#
+	====================================================================
+	Manager modal
+	Shows saved maps then allows usage, renaming or deleting
+	====================================================================
+	#}
+	<div class="modal fade" id="managerModal" tabindex="-1" role="dialog" aria-labelledby="managerModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="managerModalLabel">Manage saved CRUSH maps</h3>
+				</div>
+				<div class="modal-body">
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Last modified</th>
+								<th></th>
+								<th></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	{# Include ALL the libraries ! #}
+	<script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='lib/d3.v3.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='lib/colorbrewer.js') }}"></script>
+	<script src="{{ url_for('static', filename='lib/math.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/js.cookie.js') }}"></script>
+	{# Now, all our own JavaScript#}
+	<script src="{{ url_for('static', filename='crush.js') }}"></script>
+	<script src="{{ url_for('static', filename='crush-buckets.js') }}"></script>
+	<script src="{{ url_for('static', filename='crush-devices.js') }}"></script>
+	<script src="{{ url_for('static', filename='crush-rules.js') }}"></script>
+	<script src="{{ url_for('static', filename='crush-tunables.js') }}"></script>
+	<script src="{{ url_for('static', filename='crush-types.js') }}"></script>
+	<script src="{{ url_for('static', filename='opa-modal-welcome.js') }}"></script>
+	<script src="{{ url_for('static', filename='opa-modal-manager.js') }}"></script>
+	<script src="{{ url_for('static', filename='opa-menu-left.js') }}"></script>
+	<script src="{{ url_for('static', filename='opa-menu-right.js') }}"></script>
+	<script src="{{ url_for('static', filename='app.js') }}"></script>
+	{% block footer %}{% endblock %}
+</body>
+</html>
+{# vim: set syntax=htmljinja ts=4 sw=4 autoindent:#}

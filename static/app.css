@@ -1,0 +1,72 @@
+/*
+====================================================================
+CRUSHsim - CRUSH Simulation web app for Ceph admins
+---------------------------------------------------
+
+By Xavier Villaneau, 2015
+xvillaneau@gmail.com
+Claranet SAS, Rennes, France
+====================================================================
+app.css - CSS and styles for the app
+*/
+
+/* Makes the menus behave as indended */
+#appMenuL, #appMenuR {
+	height: 100%;
+	width: 300px;
+	position: absolute;
+	padding: 15px;
+	overflow: auto;
+}
+
+#appMenuR {
+	right: 0;
+}
+
+/* Makes the hovered information panel look good */
+#appMenuL .infoPanel ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+/* This is the circle that appears in "arrange nodes in circle" mode */
+#appGraph .node-circle {
+	stroke: lightgrey;
+	stroke-width: 1px;
+	stroke-dasharray: 10,20;
+	fill: transparent;
+}
+
+/* Adds a space to the buttons in the manager rows, or it would be ugly */
+#managerModal tr button {
+	margin-left: 1em;
+}
+
+/* Applies to the colored dots in the legend table.
+Makes then bigger but doesn't expand the row.*/
+.legendPanel table span.dot {
+	font-size: 2em;
+	line-height: 0;
+}
+
+.legendPanel table span.circle {
+	cursor: pointer;
+}
+
+.legendPanel table span.circle.text-primary {
+	font-weight: bold;
+}
+
+/* Global node and link appearance for the graph */
+.node {
+	stroke: #fff;
+	stroke-width: 1.5px;
+}
+
+.link {
+	stroke: #999;
+	stroke-opacity: .6;
+}
+
+/* vim: set ts=4 sw=4 autoindent: */
